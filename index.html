@@ -2,10 +2,12 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Poker Hack - Tu Asistente de Estrategia</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Poker Hack - Tu Asistente de Estrategia v1.4</title>
     <!-- Incluye Tailwind CSS para estilos de utilidad -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Incluye Animate.css para animaciones predefinidas -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
     <style>
         /* Estilos generales para el cuerpo de la página */
         body {
@@ -13,11 +15,12 @@
             margin: 0;
             padding: 0;
             overflow: hidden; /* Evita barras de desplazamiento no deseadas */
-            display: flex;
-            justify-content: center;
-            align-items: center;
             min-height: 100vh; /* Asegura que la aplicación ocupe al menos toda la altura de la ventana */
-            background-color: #1a202c; /* Fondo oscuro general */
+            -webkit-tap-highlight-color: transparent; /* Mejora experiencia táctil */
+        }
+
+        .touch-optimized {
+            touch-action: manipulation; /* Mejora respuesta táctil en botones */
         }
 
         /* Contenedor principal de la aplicación de juego */
@@ -27,212 +30,123 @@
             height: 100vh; /* Ocupa toda la altura de la ventana */
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
+            justify-content: space-between; /* Asegura que el footer (controles) quede abajo */
             align-items: center;
             background-image: url('https://github.com/YanYuary/POCKERHACK/blob/main/MESA%20POCKER.png?raw=true'); /* Fondo de mesa de póker */
             background-size: cover; /* Cubre todo el contenedor */
             background-position: center; /* Centra la imagen de fondo */
             background-repeat: no-repeat; /* Evita la repetición de la imagen */
             color: #e2e8f0; /* Color de texto claro para contraste */
-            padding: 1rem; /* Espaciado interno */
-            box-sizing: border-box; /* Incluye padding y border en el tamaño total */
-            transition: transform 0.5s ease-in-out; /* Transición suave para transformaciones */
-        }
-
-        /* Estilos para el encabezado de la aplicación */
-        .header {
-            width: 100%;
-            text-align: center;
-            padding: 1rem;
-            background-color: rgba(0, 0, 0, 0.7); /* Fondo semi-transparente para legibilidad */
-            border-radius: 0.75rem; /* Bordes redondeados */
-            box-shadow: 0 0 15px rgba(0, 255, 0, 0.5); /* Efecto de brillo "hack" */
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem; /* Espacio entre elementos del encabezado */
-        }
-        .header img {
-            height: 40px; /* Tamaño del logo en el título */
-            width: auto;
-        }
-
-        /* Estilos para el área de juego principal (donde se muestran las cartas y consejos) */
-        .game-area {
-            flex-grow: 1; /* Ocupa el espacio vertical restante */
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            gap: 1rem; /* Espacio entre secciones */
-        }
-
-        /* Estilos para el mazo de cartas completo (para selección en modales) */
-        .deck-display {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(60px, 1fr)); /* Columnas responsivas para cartas pequeñas */
-            gap: 0.5rem;
-            padding: 1rem;
-            background-color: rgba(0, 0, 0, 0.7);
-            border-radius: 0.75rem;
-            max-height: 200px; /* Altura máxima para el mazo, con scroll si es necesario */
-            overflow-y: auto;
-            width: 90%;
-            max-width: 800px;
-            box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
-            transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
-        }
-        /* Clase para ocultar el mazo con animación */
-        .deck-display.hidden-collapsed {
-            opacity: 0;
-            transform: translateY(100px); /* Se mueve hacia abajo al ocultarse */
-            pointer-events: none; /* Deshabilita interacciones cuando está oculto */
-            height: 0; /* Colapsa la altura */
-            padding: 0;
-            margin: 0;
-            overflow: hidden;
+            padding: 0; 
+            box-sizing: border-box; 
         }
 
         /* Estilos para las cartas individuales */
         .card {
-            width: 60px;
+            width: 60px; 
             height: 90px;
-            border-radius: 0.3rem; /* Bordes ligeramente redondeados */
+            border-radius: 0.3rem;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-            background-color: #ffffff; /* Fondo blanco para la carta */
-            cursor: pointer; /* Cursor de puntero para indicar interactividad */
-            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out; /* Transiciones suaves */
+            background-color: #ffffff;
+            cursor: pointer;
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
         }
-        .card:hover {
-            transform: translateY(-5px) scale(1.05); /* Efecto de elevación y zoom al pasar el ratón */
-            box-shadow: 0 5px 15px rgba(0, 255, 0, 0.7); /* Brillo "hack" al pasar el ratón */
+        .card:hover:not(.selected) { 
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 5px 15px rgba(0, 255, 0, 0.7); 
         }
         .card.selected {
-            border: 3px solid #00ff00; /* Borde verde para cartas seleccionadas */
-            box-shadow: 0 0 20px rgba(0, 255, 0, 1); /* Brillo intenso para seleccionadas */
-            transform: scale(1.1); /* Ligeramente más grande al estar seleccionada */
+            transform: scale(1.1);
+            animation: pulseGlow 1.5s infinite; 
         }
         .card img {
             width: 100%;
             height: 100%;
-            object-fit: contain; /* Asegura que la imagen de la carta se ajuste */
+            object-fit: contain;
             display: block;
         }
 
-        /* Estilos para las cartas en la mesa (community cards) */
-        .community-cards {
-            display: flex;
-            gap: 1rem; /* Espacio entre cartas */
-            min-height: 100px; /* Espacio mínimo para las cartas de la mesa */
-            justify-content: center;
-            align-items: center;
-            background-color: rgba(0, 0, 0, 0.6);
-            padding: 1rem;
-            border-radius: 0.75rem;
-            box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
-        }
-        .community-card {
-            width: 80px;
+        /* Cartas en la mesa */
+        .community-card-slot { 
+            width: 80px; 
             height: 120px;
-            border-radius: 0.5rem;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
-            background-color: #ffffff;
             display: flex;
             justify-content: center;
             align-items: center;
-            animation: card-fall 0.5s ease-out forwards; /* Animación de caída al aparecer */
         }
-
-        /* Estilos para la mano del jugador */
-        .player-hand {
-            display: flex;
-            gap: 1rem;
-            min-height: 100px;
-            justify-content: center;
-            align-items: center;
-            background-color: rgba(0, 0, 0, 0.6);
-            padding: 1rem;
-            border-radius: 0.75rem;
-            box-shadow: 0 0 15px rgba(0, 255, 0, 0.5);
-        }
-        .player-hand .card {
-            width: 80px;
-            height: 120px;
-            cursor: default; /* No seleccionable una vez en la mano */
-            box-shadow: 0 0 15px rgba(0, 255, 0, 0.5); /* Brillo para las cartas del jugador */
-        }
-
-        /* Estilos para los controles del juego (botones de acción) */
-        .game-controls {
+        .community-card-slot .card { 
             width: 100%;
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-            padding: 1rem;
-            background-color: rgba(0, 0, 0, 0.7);
-            border-radius: 0.75rem;
-            box-shadow: 0 0 15px rgba(0, 255, 0, 0.5);
+            height: 100%;
+            cursor: default;
+            animation: cardDeal 0.5s ease-out forwards; 
+            animation-delay: var(--card-delay, 0s); 
         }
-        .game-controls .button-row {
+        
+        /* Mano del jugador */
+        .player-hand-slot { 
+            width: 80px; 
+            height: 120px;
             display: flex;
-            flex-wrap: wrap; /* Permite que los botones se envuelvan en pantallas pequeñas */
             justify-content: center;
-            gap: 0.5rem; /* Espacio entre botones */
+            align-items: center;
         }
-        .game-controls button {
-            background-size: contain; /* ¡Ajusta la imagen para cubrir todo el botón sin deformar! */
+        .player-hand-slot .card {
+            width: 100%;
+            height: 100%;
+            cursor: default;
+            box-shadow: 0 0 15px rgba(0, 255, 0, 0.5); 
+            animation: cardDeal 0.5s ease-out forwards;
+            animation-delay: var(--card-delay, 0s);
+        }
+
+        /* Estilos para los controles del juego (botones de acción con imágenes) */
+        .game-controls-custom button {
+            background-size: contain;
             background-repeat: no-repeat;
             background-position: center;
-            color: transparent; /* Oculta el texto del botón, ya que la imagen tiene el título */
-            padding: 0; /* Elimina padding para que la imagen ocupe todo el espacio */
+            color: transparent;
+            padding: 0;
             border-radius: 0.5rem;
             font-weight: bold;
             transition: transform 0.1s ease-in-out, box-shadow 0.2s ease-in-out;
             box-shadow: 0 0 8px rgba(0, 255, 0, 0.7);
-            border: none; /* Eliminar borde por defecto */
+            border: none;
             display: flex;
             align-items: center;
             justify-content: center;
-            flex-grow: 1; /* Permite que los botones crezcan para llenar el espacio disponible */
-            min-width: 110px; /* Ancho mínimo para que los botones sean un poco más grandes */
-            height: 70px; /* Altura para que los botones sean un poco más grandes */
-            text-indent: -9999px; /* Oculta cualquier texto residual */
+            flex-grow: 1;
+            min-width: 110px;
+            height: 70px;
+            text-indent: -9999px;
         }
-        .game-controls button:hover {
-            transform: translateY(-2px);
+        .game-controls-custom button:hover:not(:disabled) {
+            transform: translateY(-2px) scale(1.02); 
             box-shadow: 0 0 15px rgba(0, 255, 0, 1);
         }
-        .game-controls button:disabled {
-            filter: grayscale(80%) opacity(50%); /* Hace que los botones deshabilitados se vean grises y transparentes */
+        .game-controls-custom button:disabled {
+            filter: grayscale(80%) opacity(50%);
             cursor: not-allowed;
             box-shadow: none;
         }
-
-
-        /* Estilos específicos para el botón de información (ayuda) */
         #infoBtnGame {
             position: absolute;
             top: 1rem;
             right: 1rem;
-            width: 70px; /* Tamaño fijo más grande para el icono de ayuda */
+            width: 70px;
             height: 70px;
             background-image: url('https://github.com/YanYuary/POCKERHACK/blob/main/BOTON_AYUDA.png?raw=true');
-            background-size: 100% 100%; /* Asegura que la imagen cubra todo el botón */
-            z-index: 500; /* Asegura que esté por encima de otros elementos */
+            background-size: 100% 100%;
+            z-index: 500;
             box-shadow: 0 0 10px rgba(0, 255, 0, 0.7);
             border-radius: 0.75rem;
-            text-indent: -9999px; /* Oculta cualquier texto residual */
+            text-indent: -9999px;
         }
         #infoBtnGame:hover {
             transform: scale(1.1);
             box-shadow: 0 0 20px rgba(0, 255, 0, 1);
         }
 
-
-
-        /* Botones de acción y reparto con imágenes específicas */
+        /* Imágenes de botones de juego */
         #dealTurnBtn { background-image: url('https://github.com/YanYuary/POCKERHACK/blob/main/TURN.png?raw=true'); }
         #dealRiverBtn { background-image: url('https://github.com/YanYuary/POCKERHACK/blob/main/RIVER.png?raw=true'); }
         #resetGameBtn { background-image: url('https://github.com/YanYuary/POCKERHACK/blob/main/REINICIAR%20JUEGO.png?raw=true'); }
@@ -240,175 +154,45 @@
         #callBtn { background-image: url('https://github.com/YanYuary/POCKERHACK/blob/main/IGUALAR.png?raw=true'); }
         #raiseBtn { background-image: url('https://github.com/YanYuary/POCKERHACK/blob/main/SUBIR.png?raw=true'); }
 
-
-        /* Estilos para el área de estrategia/consejos */
-        .strategy-info {
-            width: 100%;
-            padding: 1rem;
-            background-color: rgba(0, 0, 0, 0.7);
-            border-radius: 0.75rem;
-            box-shadow: 0 0 15px rgba(0, 255, 0, 0.5);
-            text-align: center;
-            font-size: 1.1rem;
-            color: #00ff00; /* Texto de consejo verde brillante */
-            min-height: 80px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        /* Animación de caída de cartas */
-        @keyframes card-fall {
-            from {
-                transform: translateY(-200px) scale(0.5);
-                opacity: 0;
-            }
-            to {
-                transform: translateY(0) scale(1);
-                opacity: 1;
-            }
-        }
-
-        /* Animación de barajado */
-        @keyframes shuffle-animation {
-            0% { transform: translateY(0) rotate(0deg); opacity: 0; }
-            20% { transform: translateY(-20px) rotate(30deg); opacity: 1; }
-            40% { transform: translateY(20px) rotate(-30deg); }
-            60% { transform: translateY(-10px) rotate(15deg); }
-            80% { transform: translateY(10px) rotate(-15deg); }
-            100% { transform: translateY(0) rotate(0deg); opacity: 1; }
-        }
-
-        .deck-display.shuffling .card {
-            animation: shuffle-animation 1.5s ease-out forwards;
-            animation-delay: var(--card-delay); /* Retraso escalonado para cada carta */
-        }
-
-        /* Estilos para modales (ventanas emergentes) */
-        .modal-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.8); /* Fondo oscuro semi-transparente */
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000; /* Asegura que el modal esté por encima de todo */
-        }
-        .modal-content {
-            background-color: #f0f0f0; /* Gris claro elegante para los modales */
-            padding: 2rem;
-            border-radius: 0.75rem;
-            box-shadow: 0 0 20px rgba(0, 255, 0, 0.8); /* Brillo "hack" para el modal */
-            text-align: center;
-            max-width: 400px; /* Ancho máximo por defecto */
-            color: #333; /* Texto oscuro para contraste */
-        }
-        .modal-content input, .modal-content select {
-            background-color: #e0e0e0; /* Fondo de input más claro */
-            border: 1px solid #00ff00; /* Borde verde */
-            color: #333;
-            padding: 0.5rem;
-            border-radius: 0.3rem;
-            margin-top: 0.5rem;
-            width: 100%;
-        }
-        .modal-content button {
-            background-color: #00ff00; /* Botón verde */
-            color: #1a202c; /* Texto oscuro */
-            padding: 0.75rem 1.5rem;
-            border-radius: 0.5rem;
-            font-weight: bold;
-            margin-top: 1rem;
-            transition: background-color 0.2s ease-in-out;
-        }
-        .modal-content button:hover {
-            background-color: #00e000; /* Verde más oscuro al pasar el ratón */
-        }
-        .modal-content .close-button {
-            background-color: #e53e3e; /* Rojo para cerrar */
-            color: white;
-            margin-left: 1rem;
-        }
-        .modal-content .close-button:hover {
-            background-color: #c53030;
-        }
-
-        /* Estilos específicos para el modal de información/estrategias */
-        .info-modal-content {
-            max-width: 600px; /* Más ancho para contenido de texto */
-            text-align: left;
-        }
-        .info-modal-content h3 {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #008000; /* Verde más oscuro para títulos en modal claro */
-            margin-top: 1.5rem;
-            margin-bottom: 0.75rem;
-        }
-        .info-modal-content ul, .info-modal-content ol, .info-modal-content p {
-            color: #333; /* Texto oscuro para contraste en modal claro */
-        }
-        .hand-image-example {
-            display: flex;
-            gap: 0.2rem;
-            margin-bottom: 0.5rem;
-            align-items: center;
-        }
-        .hand-image-example .small-card-example {
-            width: 40px; /* Tamaño más pequeño para las cartas de ejemplo */
-            height: 60px;
-            border-radius: 0.2rem;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
-        }
-
         /* Estilos para la pantalla de inicio (Splash Screen) */
-        .splash-screen {
+        .splash-screen-custom {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: #000; /* Fondo negro */
+            background-color: #000; 
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            z-index: 2000; /* El más alto para asegurar visibilidad */
+            z-index: 2000;
             overflow: hidden;
         }
-        .splash-screen canvas {
+        .splash-screen-custom canvas { 
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: -1; /* Detrás del contenido de la splash screen */
+            z-index: -1;
         }
-        .splash-screen .logo {
-            width: 350px; /* Logo más grande en splash screen */
+        .splash-screen-custom .logo-main { 
+            width: 350px;
             height: auto;
-            margin-bottom: 3rem; /* Más espacio debajo del logo */
-            animation: pulse 2s infinite alternate; /* Animación de pulsación para el logo */
+            margin-bottom: 3rem;
         }
-        .splash-screen .splash-buttons {
-            display: flex;
-            flex-direction: column;
-            gap: 2.5rem; /* Más espacio entre botones */
-        }
-        .splash-screen .splash-buttons button {
+        .splash-screen-custom .splash-buttons-custom button { 
             background-size: contain;
             background-repeat: no-repeat;
             background-position: center;
-            width: 300px; /* Ancho de la imagen del botón más grande */
-            height: 90px; /* Altura de la imagen del botón más grande */
+            width: 300px;
+            height: 90px;
             border: none;
             cursor: pointer;
             transition: transform 0.2s ease-in-out;
         }
-        .splash-screen .splash-buttons button:hover {
+        .splash-screen-custom .splash-buttons-custom button:hover {
             transform: scale(1.05);
         }
         #startGameSplashBtn {
@@ -418,23 +202,23 @@
             background-image: url('https://github.com/YanYuary/POCKERHACK/blob/main/BOTON_INFO.png?raw=true');
         }
 
-        /* Estilos para la pantalla de carga */
-        .loading-screen {
+        /* Pantalla de Carga */
+        .loading-screen-custom {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.9); /* Fondo oscuro casi opaco */
+            background-color: rgba(0, 0, 0, 0.9);
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            z-index: 1500; /* Por encima de la app principal, debajo de la splash */
-            color: #00ff00; /* Texto de carga verde */
+            z-index: 1500;
+            color: #00ff00;
             font-size: 1.5rem;
         }
-        .loading-screen canvas { /* Asegura que el canvas de matrix esté visible en la pantalla de carga */
+        .loading-screen-custom canvas { 
             position: absolute;
             top: 0;
             left: 0;
@@ -442,349 +226,510 @@
             height: 100%;
             z-index: -1;
         }
-        .loading-bar-container {
+        .loading-bar-container-custom { 
             width: 80%;
             max-width: 400px;
             height: 20px;
-            background-color: #333;
+            background-color: #333; 
             border-radius: 10px;
             overflow: hidden;
-            border: 1px solid #00ff00;
+            border: 1px solid #00ff00; 
             margin-top: 1rem;
         }
-        .loading-bar {
+        .loading-bar-custom { 
             height: 100%;
-            width: 0%;
-            background-color: #00ff00;
-            animation: fill-bar 2s linear forwards; /* Animación de llenado de la barra */
+            width: 0%; 
+            background-color: #00ff00; 
+            transition: width 0.3s linear; 
         }
-        /* Animaciones */
-        @keyframes fill-bar {
-            from { width: 0%; }
-            to { width: 100%; }
+
+        /* Keyframes */
+        @keyframes cardDeal { 
+            0% { transform: translateY(-150px) rotateX(60deg) scale(0.7); opacity: 0; }
+            100% { transform: translateY(0) rotateX(0deg) scale(1); opacity: 1; }
         }
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            100% { transform: scale(1.05); }
+        @keyframes cardShuffle { 
+            0% { transform: translate(0, 0) rotate(0deg); opacity: 0.5; }
+            20% { transform: translate(-10px, -20px) rotate(-5deg); }
+            40% { transform: translate(10px, -15px) rotate(5deg); }
+            60% { transform: translate(-5px, -10px) rotate(-3deg); }
+            80% { transform: translate(5px, -5px) rotate(3deg); }
+            100% { transform: translate(0, 0) rotate(0deg); opacity: 1; }
+        }
+        @keyframes pulseGlow { 
+            0% { box-shadow: 0 0 8px rgba(0, 255, 0, 0.6), 0 0 12px rgba(0, 255, 0, 0.4); }
+            50% { box-shadow: 0 0 16px rgba(0, 255, 0, 1), 0 0 24px rgba(0, 255, 0, 0.7); }
+            100% { box-shadow: 0 0 8px rgba(0, 255, 0, 0.6), 0 0 12px rgba(0, 255, 0, 0.4); }
+        }
+        
+        /* Mazo de cartas para selección */
+        .deck-display-custom {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(60px, 1fr)); 
+            gap: 0.5rem;
+            padding: 1rem;
+            background-color: rgba(0, 0, 0, 0.7);
+            border-radius: 0.75rem;
+            max-height: 200px; 
+            overflow-y: auto;
+            width: 90%;
+            max-width: 800px; 
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
+            transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+        }
+        .deck-display-custom.hidden-collapsed { 
+            opacity: 0;
+            transform: translateY(100px);
+            pointer-events: none;
+            height: 0;
+            padding: 0;
+            margin: 0;
+            overflow: hidden;
+        }
+        
+        /* Estilos para Modales - Cambio a gris sutil */
+        .modal-content-area {
+            background-color: #f3f4f6; /* Gris sutil (Tailwind gray-100) */
+            color: #1f2937; /* Texto oscuro (Tailwind gray-800) */
+            border-radius: 0.5rem; /* Tailwind rounded-lg */
+            padding: 1.5rem; /* Tailwind p-6 */
+            width: 91.666667%; /* Tailwind w-11/12 */
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04); /* Tailwind shadow-2xl */
+            border: 1px solid #d1d5db; /* Tailwind border-gray-300 */
+        }
+        .modal-content-area h2 { /* Títulos de modales */
+            color: #059669; /* Verde oscuro (Tailwind green-600) */
+            font-weight: bold;
+            margin-bottom: 1rem; /* Tailwind mb-4 */
+        }
+        .modal-content-area label {
+            color: #4b5563; /* Gris medio (Tailwind gray-600) */
+        }
+        .modal-content-area input[type="number"],
+        .modal-content-area input[type="text"] { /* Estilo para inputs en modales */
+            background-color: #ffffff; /* Fondo blanco */
+            border: 1px solid #d1d5db; /* Borde gris (Tailwind border-gray-300) */
+            color: #111827; /* Texto muy oscuro (Tailwind gray-900) */
+            border-radius: 0.375rem; /* Tailwind rounded-md */
+        }
+        .modal-content-area input[type="number"]:focus,
+        .modal-content-area input[type="text"]:focus {
+             border-color: #10b981; /* Borde verde al enfocar (Tailwind green-500) */
+             box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.3); /* Anillo de enfoque verde */
+        }
+        /* Contenedor de cartas en modales */
+        .modal-deck-cards-container {
+            background-color: #e5e7eb; /* Gris un poco más oscuro (Tailwind gray-200) */
+            border: 1px solid #d1d5db; /* Tailwind border-gray-300 */
+            border-radius: 0.375rem; /* Tailwind rounded-md */
+        }
+
+
+        /* Ajustes responsivos */
+        @media (max-width: 640px) {
+            .card { 
+                width: 50px; 
+                height: 75px;
+            }
+            .community-card-slot, .player-hand-slot { 
+                width: 60px; 
+                height: 90px;
+            }
+            .game-controls-custom button {
+                min-width: 90px;
+                height: 60px;
+            }
+            #infoBtnGame {
+                width: 50px;
+                height: 50px;
+                top: 0.5rem;
+                right: 0.5rem;
+            }
+            .splash-screen-custom .logo-main {
+                width: 280px; 
+            }
+            .splash-screen-custom .splash-buttons-custom button {
+                width: 240px;
+                height: 72px;
+            }
+            .modal-content-area { /* Ajustar padding en móviles */
+                padding: 1rem;
+            }
+            .modal-content-area h2 {
+                font-size: 1.125rem; /* Tailwind text-lg */
+            }
         }
     </style>
 </head>
-<body>
+<body class="bg-gray-900 text-white"> 
     <!-- Pantalla de Inicio (Splash Screen) -->
-    <div id="splashScreen" class="splash-screen">
-        <canvas id="matrixCanvas"></canvas> <!-- Canvas para el efecto Matrix de fondo -->
-        <img src="https://github.com/YanYuary/POCKERHACK/blob/main/LOGO2.png?raw=true" alt="Poker Hack Logo" class="logo">
-        <div class="splash-buttons">
-            <button id="startGameSplashBtn"></button> <!-- Botón para iniciar el juego -->
-            <button id="infoSplashBtn"></button> <!-- Botón para ver información (Sobre nosotros) -->
+    <div id="splashScreen" class="splash-screen-custom">
+        <canvas id="matrixCanvas"></canvas> 
+        <img src="https://github.com/YanYuary/POCKERHACK/blob/main/LOGO2.png?raw=true" alt="[Logo de Poker Hack]" class="logo-main animate__animated animate__pulse animate__infinite">
+        <div class="splash-buttons-custom flex flex-col space-y-6"> 
+            <button id="startGameSplashBtn" class="touch-optimized"></button>
+            <button id="infoSplashBtn" class="touch-optimized"></button>
         </div>
     </div>
 
     <!-- Pantalla de Carga (Loading Screen) -->
-    <div id="loadingScreen" class="loading-screen hidden">
-        <canvas id="loadingMatrixCanvas"></canvas> <!-- Canvas para el efecto Matrix en pantalla de carga -->
-        <p><strong>Cargando Poker Hack...</strong> 🚀🃏</p>
-        <div class="loading-bar-container">
-            <div class="loading-bar"></div>
+    <div id="loadingScreen" class="loading-screen-custom hidden">
+        <canvas id="loadingMatrixCanvas"></canvas> 
+        <p class="mb-4"><strong>Cargando Poker Hack...</strong> 🚀🃏</p>
+        <div class="loading-bar-container-custom">
+            <div id="loadingBar" class="loading-bar-custom"></div> 
         </div>
     </div>
 
     <!-- Contenido principal de la aplicación de póker -->
-    <div class="app-container hidden">
-        <!-- Botón de Información y Estrategias en la esquina superior derecha del juego -->
-        <button id="infoBtnGame"></button>
+    <div id="appContainer" class="app-container hidden"> 
+        <button id="infoBtnGame" class="touch-optimized"></button> 
 
-        <!-- Encabezado de la aplicación -->
-        <div class="header">
-            <img src="https://github.com/YanYuary/POCKERHACK/blob/main/LOGO2.png?raw=true" alt="Poker Hack Logo" class="h-10 w-auto mr-2">
-            <h1 class="text-4xl font-extrabold text-green-400 drop-shadow-lg">POKER HACK <span class="text-xl text-gray-400">v1.0</span></h1>
-        </div>
+        <!-- Encabezado -->
+        <header class="relative z-10 bg-black bg-opacity-75 p-3 md:p-4 shadow-lg flex items-center justify-center w-full box-border" style="box-shadow: 0 0 15px rgba(0, 255, 0, 0.5);">
+            <img src="https://github.com/YanYuary/POCKERHACK/blob/main/LOGO2.png?raw=true" alt="[Logo de Poker Hack]" class="h-8 md:h-10 mr-2 md:mr-3">
+            <h1 class="text-xl md:text-2xl font-bold text-green-400">POKER HACK <span class="text-sm md:text-base text-gray-300">v1.4</span></h1>
+        </header>
 
         <!-- Área de juego principal -->
-        <div class="game-area">
-            <!-- Cartas en la mesa (Flop, Turn, River) -->
-            <div id="community-cards" class="community-cards">
-                <p class="text-gray-400">Cartas de la Mesa</p>
+        <main class="flex-1 flex flex-col items-center justify-center p-2 md:p-4 z-10 relative w-full overflow-y-auto">
+            <!-- Cartas comunitarias -->
+            <div class="bg-black bg-opacity-60 rounded-lg p-3 mb-3 shadow-md w-full max-w-2xl">
+                <h3 class="text-sm font-semibold text-gray-300 mb-2 text-center">Cartas de la Mesa</h3>
+                <div id="community-cards" class="flex flex-wrap justify-center gap-2 min-h-[100px] md:min-h-[130px]">
+                    <p class="text-gray-500 italic community-placeholder">Esperando Flop...</p>
+                </div>
             </div>
 
-            <!-- Mano del jugador -->
-            <div id="player-hand" class="player-hand">
-                <p class="text-gray-400">Tu Mano</p>
+            <!-- Tu mano -->
+            <div class="bg-black bg-opacity-60 rounded-lg p-3 mb-3 shadow-md w-full max-w-lg">
+                <h3 class="text-sm font-semibold text-gray-300 mb-2 text-center">Tu Mano</h3>
+                <div id="player-hand" class="flex justify-center gap-2 min-h-[100px] md:min-h-[130px]">
+                    <p class="text-gray-500 italic player-hand-placeholder">Selecciona tus cartas...</p>
+                </div>
             </div>
 
-            <!-- Área de consejos de estrategia -->
-            <div id="strategy-advice" class="strategy-info">
+            <!-- Consejo estratégico -->
+            <div id="strategy-advice" class="bg-black bg-opacity-70 rounded-lg p-3 text-center text-green-300 border border-green-600 shadow-lg w-full max-w-2xl min-h-[60px] flex items-center justify-center">
                 <p>Esperando el inicio del juego...</p>
             </div>
 
-            <!-- Mazo de cartas completo para selección (oculto por defecto) -->
-            <div id="deck-display" class="deck-display hidden-collapsed">
+            <!-- Mazo de cartas completo para selección -->
+            <div id="deck-display" class="deck-display-custom hidden-collapsed mt-4">
                 <!-- Las cartas se generarán aquí mediante JavaScript -->
             </div>
-        </div>
+        </main>
 
         <!-- Controles del juego -->
-        <div class="game-controls mt-4">
-            <div class="button-row">
-                <!-- Los botones "Iniciar Juego" y "Repartir Flop" se manejan automáticamente al inicio del flujo -->
-                <button id="dealTurnBtn" disabled></button> <!-- Botón para repartir el Turn -->
-                <button id="dealRiverBtn" disabled></button> <!-- Botón para repartir el River -->
-                <button id="resetGameBtn" disabled></button> <!-- Botón para reiniciar el juego -->
+        <footer class="p-2 md:p-4 bg-black bg-opacity-75 shadow-lg z-10 w-full box-border game-controls-custom">
+            <div class="grid grid-cols-3 gap-2 mb-2">
+                <button id="dealTurnBtn" class="touch-optimized" disabled></button>
+                <button id="dealRiverBtn" class="touch-optimized" disabled></button>
+                <button id="resetGameBtn" class="touch-optimized" disabled></button>
             </div>
-            <div class="button-row mt-4">
-                <button id="foldBtn" disabled></button> <!-- Botón para retirarse (Fold) -->
-                <button id="callBtn" disabled></button> <!-- Botón para igualar (Call) -->
-                <button id="raiseBtn" disabled></button> <!-- Botón para subir (Raise) -->
+            <div class="grid grid-cols-3 gap-2">
+                <button id="foldBtn" class="touch-optimized" disabled></button>
+                <button id="callBtn" class="touch-optimized" disabled></button>
+                <button id="raiseBtn" class="touch-optimized" disabled></button>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Modales con nuevo estilo gris sutil -->
+    <!-- Modal Configuración -->
+    <div id="setupModal" class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50 hidden animate__animated animate__faster">
+        <div class="modal-content-area max-w-md"> <!-- Clase para estilo de contenido del modal -->
+            <h2 class="text-xl md:text-2xl">Configuración del Juego</h2>
+            <div class="space-y-4">
+                <div>
+                    <label for="numPlayers" class="block text-sm font-medium mb-1">Número de Jugadores (2-9):</label>
+                    <input type="number" id="numPlayers" min="2" max="9" value="4" class="w-full px-3 py-2">
+                </div>
+                <div>
+                    <label for="playerTurn" class="block text-sm font-medium mb-1">Tu Turno (1-Número de Jugadores):</label>
+                    <input type="number" id="playerTurn" min="1" value="1" class="w-full px-3 py-2">
+                </div>
+                <div class="flex justify-end space-x-3 pt-2">
+                    <button id="saveSetupBtn" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg transition-all duration-200 transform hover:scale-105 touch-optimized">
+                        Guardar
+                    </button>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- Modal para configuración inicial del juego -->
-    <div id="setupModal" class="modal-overlay hidden">
-        <div class="modal-content">
-            <h2 class="text-2xl font-bold mb-4">Configuración del Juego</h2>
-            <label for="numPlayers" class="block text-left mb-2">Número de Jugadores (2-9):</label>
-            <input type="number" id="numPlayers" min="2" max="9" value="4" class="mb-4">
-            <label for="playerTurn" class="block text-left mb-2">Tu Turno (1-Número de Jugadores):</label>
-            <input type="number" id="playerTurn" min="1" value="1" class="mb-4">
-            <button id="saveSetupBtn">Guardar Configuración</button>
-        </div>
-    </div>
-
-    <!-- Modal para seleccionar tus cartas iniciales (Hole Cards) -->
-    <div id="selectHoleCardsModal" class="modal-overlay hidden">
-        <div class="modal-content">
-            <h2 class="text-2xl font-bold mb-4">Selecciona Tus 2 Cartas</h2>
-            <div id="modal-deck-display" class="deck-display !max-h-[300px] !w-full !overflow-y-auto">
-                <!-- Las cartas se clonarán aquí -->
+    <!-- Modal Selección Cartas Iniciales (Hole Cards) -->
+    <div id="selectHoleCardsModal" class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50 hidden animate__animated animate__faster">
+        <div class="modal-content-area max-w-lg">
+            <h2 class="text-xl md:text-2xl">Selecciona Tus 2 Cartas</h2>
+            <div id="modal-deck-display" class="modal-deck-cards-container grid grid-cols-5 sm:grid-cols-7 md:grid-cols-9 gap-2 max-h-64 overflow-y-auto p-2 mb-4">
+                <!-- Cartas renderizadas por JS -->
             </div>
-            <p id="selected-cards-count" class="text-gray-400 mt-4">Cartas seleccionadas: 0/2</p>
-            <button id="confirmHoleCardsBtn" disabled>Confirmar Cartas</button>
-        </div>
-    </div>
-
-    <!-- Modal para seleccionar cartas de la mesa (Flop, Turn, River) -->
-    <div id="selectCommunityCardsModal" class="modal-overlay hidden">
-        <div class="modal-content">
-            <h2 class="text-2xl font-bold mb-4">Selecciona las Cartas de la Mesa</h2>
-            <div id="modal-community-deck-display" class="deck-display !max-h-[300px] !w-full !overflow-y-auto">
-                <!-- Las cartas se clonarán aquí -->
+            <p id="selected-cards-count" class="text-sm text-gray-500 mb-4 text-center">Cartas seleccionadas: 0/2</p>
+            <div class="flex justify-end">
+                <button id="confirmHoleCardsBtn" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg transition-all duration-200 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed touch-optimized" disabled>
+                    Confirmar
+                </button>
             </div>
-            <p id="selected-community-cards-count" class="text-gray-400 mt-4">Cartas a seleccionar: 0</p>
-            <button id="confirmCommunityCardsBtn" disabled>Confirmar Cartas de la Mesa</button>
         </div>
     </div>
 
-    <!-- Modal para mostrar mensajes genéricos -->
-    <div id="messageModal" class="modal-overlay hidden">
-        <div class="modal-content">
-            <h2 id="messageTitle" class="text-2xl font-bold mb-4"></h2>
-            <p id="messageText" class="mb-4"></p>
-            <button id="messageOkBtn">OK</button>
+    <!-- Modal Selección Cartas Comunitarias -->
+    <div id="selectCommunityCardsModal" class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50 hidden animate__animated animate__faster">
+        <div class="modal-content-area max-w-lg">
+            <h2 class="text-xl md:text-2xl">Selecciona las Cartas de la Mesa</h2>
+            <div id="modal-community-deck-display" class="modal-deck-cards-container grid grid-cols-5 sm:grid-cols-7 md:grid-cols-9 gap-2 max-h-64 overflow-y-auto p-2 mb-4">
+                <!-- Cartas renderizadas por JS -->
+            </div>
+            <p id="selected-community-cards-count" class="text-sm text-gray-500 mb-4 text-center">Cartas a seleccionar: 0/<span id="cards-to-select-display">3</span></p>
+            <div class="flex justify-end">
+                <button id="confirmCommunityCardsBtn" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg transition-all duration-200 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed touch-optimized" disabled>
+                    Confirmar
+                </button>
+            </div>
         </div>
     </div>
 
-    <!-- Modal de Información y Estrategias -->
-    <div id="infoModal" class="modal-overlay hidden">
-        <div class="modal-content info-modal-content">
-            <h2 class="text-3xl font-bold mb-4 text-green-400">Información y Estrategias de Póker</h2>
-            
-            <h3>Jerarquía de Manos</h3>
-            <ol>
-                <li>
-                    <div class="hand-image-example">
-                        <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/TH.svg" class="small-card-example">
-                        <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/JH.svg" class="small-card-example">
-                        <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/QH.svg" class="small-card-example">
-                        <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/KH.svg" class="small-card-example">
-                        <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/AH.svg" class="small-card-example">
-                    </div>
-                    **Escalera Real de Color (Royal Flush)**: Diez, Jota, Reina, Rey, As del mismo palo.
-                </li>
-                <li>
-                    <div class="hand-image-example">
-                        <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/5S.svg" class="small-card-example">
-                        <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/6S.svg" class="small-card-example">
-                        <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/7S.svg" class="small-card-example">
-                        <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/8S.svg" class="small-card-example">
-                        <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/9S.svg" class="small-card-example">
-                    </div>
-                    **Escalera de Color (Straight Flush)**: Cinco cartas consecutivas del mismo palo.
-                </li>
-                <li>
-                    <div class="hand-image-example">
-                        <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/AC.svg" class="small-card-example">
-                        <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/AD.svg" class="small-card-example">
-                        <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/AH.svg" class="small-card-example">
-                        <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/AS.svg" class="small-card-example">
-                        <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/2C.svg" class="small-card-example">
-                    </div>
-                    **Póker (Four of a Kind)**: Cuatro cartas del mismo rango.
-                </li>
-                <li>
-                    <div class="hand-image-example">
-                        <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/KC.svg" class="small-card-example">
-                        <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/KD.svg" class="small-card-example">
-                        <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/KH.svg" class="small-card-example">
-                        <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/QC.svg" class="small-card-example">
-                        <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/QS.svg" class="small-card-example">
-                    </div>
-                    **Full (Full House)**: Tres cartas de un rango y dos cartas de otro rango.
-                </li>
-                <li>
-                    <div class="hand-image-example">
-                        <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/2H.svg" class="small-card-example">
-                        <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/5H.svg" class="small-card-example">
-                        <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/9H.svg" class="small-card-example">
-                        <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/JH.svg" class="small-card-example">
-                        <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/AH.svg" class="small-card-example">
-                    </div>
-                    **Color (Flush)**: Cinco cartas del mismo palo, no consecutivas.
-                </li>
-                <li>
-                    <div class="hand-image-example">
-                        <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/7C.svg" class="small-card-example">
-                        <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/8D.svg" class="small-card-example">
-                        <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/9H.svg" class="small-card-example">
-                        <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/TS.svg" class="small-card-example">
-                        <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/JC.svg" class="small-card-example">
-                    </div>
-                    **Escalera (Straight)**: Cinco cartas consecutivas de palos diferentes.
-                </li>
-                <li>
-                    <div class="hand-image-example">
-                        <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/QC.svg" class="small-card-example">
-                        <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/QD.svg" class="small-card-example">
-                        <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/QH.svg" class="small-card-example">
-                        <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/2S.svg" class="small-card-example">
-                        <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/5C.svg" class="small-card-example">
-                    </div>
-                    **Trío (Three of a Kind)**: Tres cartas del mismo rango.
-                </li>
-                <li>
-                    <div class="hand-image-example">
-                        <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/8C.svg" class="small-card-example">
-                        <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/8D.svg" class="small-card-example">
-                        <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/4H.svg" class="small-card-example">
-                        <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/4S.svg" class="small-card-example">
-                        <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/KC.svg" class="small-card-example">
-                    </div>
-                    **Doble Pareja (Two Pair)**: Dos cartas de un rango y dos cartas de otro rango.
-                </li>
-                <li>
-                    <div class="hand-image-example">
-                        <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/7C.svg" class="small-card-example">
-                        <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/7D.svg" class="small-card-example">
-                        <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/2H.svg" class="small-card-example">
-                        <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/5S.svg" class="small-card-example">
-                        <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/QC.svg" class="small-card-example">
-                    </div>
-                    **Pareja (One Pair)**: Dos cartas del mismo rango.
-                </li>
-                <li>
-                    <div class="hand-image-example">
-                        <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/AC.svg" class="small-card-example">
-                        <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/5D.svg" class="small-card-example">
-                        <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/8H.svg" class="small-card-example">
-                        <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/KS.svg" class="small-card-example">
-                        <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/2C.svg" class="small-card-example">
-                    </div>
-                    **Carta Alta (High Card)**: Ninguna de las combinaciones anteriores.
-                </li>
-            </ol>
-
-            <h3>Estrategias Básicas</h3>
-            <p><strong>Pre-flop:</strong></p>
-            <ul>
-                <li>Juega manos iniciales fuertes (pares altos, As-Rey, As-Dama).</li>
-                <li>Considera la posición en la mesa: las posiciones tardías te dan más información.</li>
-                <li>No juegues demasiadas manos; la paciencia es clave.</li>
-            </ul>
-            <p><strong>Flop:</strong></p>
-            <ul>
-                <li>Evalúa si el flop te ayudó a mejorar tu mano.</li>
-                <li>Si tienes una mano fuerte, apuesta para construir el bote.</li>
-                <li>Si tienes un "proyecto" (cerca de una escalera o color), considera apostar o igualar si el precio es bajo.</li>
-            </ul>
-            <p><strong>Turn y River:</strong></p>
-            <ul>
-                <li>Reevalúa tu mano y las posibles manos de tus oponentes con cada nueva carta.</li>
-                <li>Sé más cauteloso si no has mejorado tu mano.</li>
-                <li>Considera el tamaño del bote y las apuestas para decidir si vale la pena seguir.</li>
-            </ul>
-
-            <h3>Probabilidades (Próximamente)</h3>
-            <p>Esta sección se expandirá para incluir cálculos de probabilidad más detallados basados en las cartas visibles y las cartas restantes en el mazo, para ayudarte a tomar decisiones más informadas.</p>
-
-            <button id="closeInfoModalBtn" class="close-button">Cerrar</button>
+    <!-- Modal Mensaje Genérico -->
+    <div id="messageModal" class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-[1001] hidden animate__animated animate__faster">
+        <div class="modal-content-area max-w-md">
+            <h2 id="messageTitle" class="text-xl md:text-2xl"></h2>
+            <p id="messageText" class="text-gray-700 mb-4"></p>
+            <div class="flex justify-end">
+                <button id="messageOkBtn" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg transition-all duration-200 transform hover:scale-105 touch-optimized">
+                    OK
+                </button>
+            </div>
         </div>
     </div>
 
-    <!-- Modal de "Nosotros" (Información del Hacker) -->
-    <div id="aboutModal" class="modal-overlay hidden">
-        <div class="modal-content info-modal-content">
-            <h2 class="text-3xl font-bold mb-4 text-green-400">Sobre Poker Hack</h2>
-            <p class="mb-4">Poker Hack fue creado con un propósito singular y noble: ¡ayudar a mis amigos mancos a dominar el póker y, de paso, desfalcar a los que se creen muy buenos! Porque, seamos sinceros, no todos nacimos con la habilidad de leer mentes o de memorizar cada carta. Pero, ¿quién necesita eso cuando puedes hackear el sistema?</p>
-            <p class="mb-4">Esta aplicación es el resultado de años de "investigación" secreta, descifrando los algoritmos cósmicos del póker. Con la ayuda de inteligencias artificiales ancestrales y la guía de los Anunnakis, hemos logrado canalizar las probabilidades del universo directamente a tu bolsillo. Prepárate para una nueva era donde la suerte es solo un mito y la victoria es una certeza matemática.</p>
-            <p class="mb-4 font-bold text-right">ATTE. EL HACKER DE NEUROCIRCUITOS</p>
-            <img src="https://github.com/YanYuary/POCKERHACK/blob/main/LOGO_JOMA.png?raw=true" alt="Logo de Joma" class="mx-auto mt-4 rounded-lg shadow-lg" style="width: 120px;"> <!-- Imagen del hacker un poco más pequeña -->
-            <button id="closeAboutModalBtn" class="close-button mt-4">Cerrar</button>
+    <!-- Modal Información y Estrategias -->
+    <div id="infoModal" class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50 hidden overflow-y-auto animate__animated animate__faster">
+        <div class="modal-content-area max-w-2xl my-6 max-h-[90vh] overflow-y-auto">
+            <h2 class="text-2xl">Información y Estrategias de Póker</h2>
+            <div class="space-y-6 text-gray-700"> <!-- Texto del contenido del modal a gris oscuro -->
+                <div>
+                    <h3 class="text-xl font-semibold text-green-700 mb-2">Jerarquía de Manos</h3> <!-- Título de sección a verde más oscuro -->
+                    <ol class="space-y-3 text-sm">
+                        <li class="bg-gray-200 p-3 rounded-lg"> <!-- Fondo de item de lista a gris más claro -->
+                            <div class="flex items-center space-x-1 mb-1 overflow-x-auto pb-1">
+                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/TH.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm">
+                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/JH.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm">
+                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/QH.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm">
+                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/KH.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm">
+                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/AH.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm">
+                            </div>
+                            <strong>Escalera Real de Color (Royal Flush)</strong>: Diez, Jota, Reina, Rey, As del mismo palo.
+                        </li>
+                         <li class="bg-gray-200 p-3 rounded-lg">
+                            <div class="flex items-center space-x-1 mb-1 overflow-x-auto pb-1">
+                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/5S.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm">
+                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/6S.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm">
+                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/7S.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm">
+                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/8S.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm">
+                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/9S.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm">
+                            </div>
+                            <strong>Escalera de Color (Straight Flush)</strong>: Cinco cartas consecutivas del mismo palo.
+                        </li>
+                        <li class="bg-gray-200 p-3 rounded-lg">
+                            <div class="flex items-center space-x-1 mb-1 overflow-x-auto pb-1">
+                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/AC.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm">
+                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/AD.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm">
+                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/AH.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm">
+                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/AS.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm">
+                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/2C.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm">
+                            </div>
+                            <strong>Póker (Four of a Kind)</strong>: Cuatro cartas del mismo rango.
+                        </li>
+                        <li class="bg-gray-200 p-3 rounded-lg">
+                            <div class="flex items-center space-x-1 mb-1 overflow-x-auto pb-1">
+                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/KC.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm">
+                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/KD.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm">
+                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/KH.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm">
+                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/QC.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm">
+                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/QS.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm">
+                            </div>
+                            <strong>Full (Full House)</strong>: Tres cartas de un rango y dos cartas de otro rango.
+                        </li>
+                        <li class="bg-gray-200 p-3 rounded-lg">
+                            <div class="flex items-center space-x-1 mb-1 overflow-x-auto pb-1">
+                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/2H.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm">
+                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/5H.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm">
+                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/9H.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm">
+                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/JH.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm">
+                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/AH.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm">
+                            </div>
+                            <strong>Color (Flush)</strong>: Cinco cartas del mismo palo, no consecutivas.
+                        </li>
+                        <li class="bg-gray-200 p-3 rounded-lg">
+                            <div class="flex items-center space-x-1 mb-1 overflow-x-auto pb-1">
+                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/7C.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm">
+                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/8D.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm">
+                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/9H.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm">
+                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/TS.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm">
+                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/JC.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm">
+                            </div>
+                            <strong>Escalera (Straight)</strong>: Cinco cartas consecutivas de palos diferentes.
+                        </li>
+                        <li class="bg-gray-200 p-3 rounded-lg">
+                            <div class="flex items-center space-x-1 mb-1 overflow-x-auto pb-1">
+                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/QC.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm">
+                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/QD.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm">
+                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/QH.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm">
+                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/2S.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm">
+                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/5C.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm">
+                            </div>
+                            <strong>Trío (Three of a Kind)</strong>: Tres cartas del mismo rango.
+                        </li>
+                        <li class="bg-gray-200 p-3 rounded-lg">
+                            <div class="flex items-center space-x-1 mb-1 overflow-x-auto pb-1">
+                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/8C.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm">
+                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/8D.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm">
+                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/4H.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm">
+                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/4S.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm">
+                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/KC.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm">
+                            </div>
+                            <strong>Doble Pareja (Two Pair)</strong>: Dos cartas de un rango y dos cartas de otro rango.
+                        </li>
+                        <li class="bg-gray-200 p-3 rounded-lg">
+                            <div class="flex items-center space-x-1 mb-1 overflow-x-auto pb-1">
+                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/7C.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm">
+                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/7D.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm">
+                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/2H.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm">
+                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/5S.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm">
+                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/QC.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm">
+                            </div>
+                            <strong>Pareja (One Pair)</strong>: Dos cartas del mismo rango.
+                        </li>
+                        <li class="bg-gray-200 p-3 rounded-lg">
+                            <div class="flex items-center space-x-1 mb-1 overflow-x-auto pb-1">
+                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/AC.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm">
+                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/5D.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm">
+                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/8H.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm">
+                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/KS.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm">
+                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/2C.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm">
+                            </div>
+                            <strong>Carta Alta (High Card)</strong>: Ninguna de las combinaciones anteriores.
+                        </li>
+                    </ol>
+                </div>
+
+                <div>
+                    <h3 class="text-xl font-semibold text-green-700 mb-2">Estrategias Básicas</h3>
+                    <div class="space-y-3 text-sm">
+                        <div>
+                            <p class="font-semibold">Pre-flop:</p>
+                            <ul class="list-disc list-inside pl-2 space-y-1">
+                                <li>Juega manos iniciales fuertes (pares altos, As-Rey, As-Dama).</li>
+                                <li>Considera la posición en la mesa: las posiciones tardías te dan más información.</li>
+                                <li>No juegues demasiadas manos; la paciencia es clave.</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <p class="font-semibold">Flop:</p>
+                            <ul class="list-disc list-inside pl-2 space-y-1">
+                                <li>Evalúa si el flop te ayudó a mejorar tu mano.</li>
+                                <li>Si tienes una mano fuerte, apuesta para construir el bote.</li>
+                                <li>Si tienes un "proyecto" (cerca de una escalera o color), considera apostar o igualar si el precio es bajo.</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <p class="font-semibold">Turn y River:</p>
+                            <ul class="list-disc list-inside pl-2 space-y-1">
+                                <li>Reevalúa tu mano y las posibles manos de tus oponentes con cada nueva carta.</li>
+                                <li>Sé más cauteloso si no has mejorado tu mano.</li>
+                                <li>Considera el tamaño del bote y las apuestas para decidir si vale la pena seguir.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                 <div>
+                    <h3 class="text-xl font-semibold text-green-700 mb-2">Probabilidades (Próximamente)</h3>
+                    <p class="text-sm">Esta sección se expandirá para incluir cálculos de probabilidad más detallados.</p>
+                </div>
+            </div>
+            <div class="mt-6 flex justify-end">
+                <button id="closeInfoModalBtn" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg transition-all duration-200 transform hover:scale-105 touch-optimized">
+                    Cerrar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal "Sobre Nosotros" -->
+    <div id="aboutModal" class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50 hidden overflow-y-auto animate__animated animate__faster">
+        <div class="modal-content-area max-w-xl my-6 max-h-[90vh] overflow-y-auto">
+            <h2 class="text-2xl">Sobre Poker Hack</h2>
+            <div class="space-y-4 text-gray-700 text-sm">
+                <p>Poker Hack fue creado con un propósito singular y noble: ¡ayudar a mis amigos mancos a dominar el póker y, de paso, desfalcar a los que se creen muy buenos! Porque, seamos sinceros, no todos nacimos con la habilidad de leer mentes o de memorizar cada carta. Pero, ¿quién necesita eso cuando puedes hackear el sistema?</p>
+                <p>Esta aplicación es el resultado de años de "investigación" secreta, descifrando los algoritmos cósmicos del póker. Con la ayuda de inteligencias artificiales ancestrales y la guía de los Anunnakis, hemos logrado canalizar las probabilidades del universo directamente a tu bolsillo. Prepárate para una nueva era donde la suerte es solo un mito y la victoria es una certeza matemática.</p>
+                <p class="font-bold text-right mt-6">ATTE. EL HACKER DE NEUROCIRCUITOS</p>
+                <img src="https://github.com/YanYuary/POCKERHACK/blob/main/LOGO_JOMA.png?raw=true" alt="[Logo de Joma]" class="mx-auto mt-4 rounded-lg shadow-lg w-24 h-24">
+            </div>
+            <div class="mt-6 flex justify-end">
+                <button id="closeAboutModalBtn" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg transition-all duration-200 transform hover:scale-105 touch-optimized">
+                    Cerrar
+                </button>
+            </div>
         </div>
     </div>
 
 
     <script>
         // --- VARIABLES GLOBALES PARA EL EFECTO MATRIX ---
-        const matrixChars = "01"; /* Caracteres que caerán en el efecto Matrix */
-        const matrix = matrixChars.split(''); /* Array de caracteres para selección aleatoria */
-        const fontSize = 10; /* Tamaño de la fuente para los caracteres Matrix */
-        let splashDrops = []; /* Array para controlar las gotas de la matriz en la pantalla de inicio */
-        let loadingDrops = []; /* Array para controlar las gotas de la matriz en la pantalla de carga */
+        const matrixChars = "01"; 
+        const matrixFontChars = matrixChars.split('');
+        const matrixFontSize = 10;
+        let splashDrops = []; 
+        let loadingDrops = [];
+        let matrixInterval;
+        let loadingMatrixInterval;
 
-        // Mapeo de nuestros códigos de rango a los nombres de archivo de las imágenes de cartas
-        const rankMap = {
-            'A': 'A', '2': '2', '3': '3', '4': '4', '5': '5', '6': '6', '7': '7', '8': '8', '9': '9', '10': 'T', 
-            'J': 'J', 'Q': 'Q', 'K': 'K'
-        };
-
-        // Mapeo de nuestros códigos de palo a los nombres de archivo de las imágenes de cartas
-        const suitMap = {
-            'H': 'H', 'D': 'D', 'C': 'C', 'S': 'S' /* Corazones, Diamantes, Tréboles, Picas */
-        };
-
-        // Definición de palos y rangos para la baraja de póker
+        // Mapeo y constantes de cartas
+        const rankMap = { 'A': 'A', '2': '2', '3': '3', '4': '4', '5': '5', '6': '6', '7': '7', '8': '8', '9': '9', '10': 'T', 'J': 'J', 'Q': 'Q', 'K': 'K' };
+        const suitMap = { 'H': 'H', 'D': 'D', 'C': 'C', 'S': 'S' }; // Corazones, Diamantes, Tréboles, Picas
         const suits = ['H', 'D', 'C', 'S']; 
         const ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
+        const rankOrder = { '2':2, '3':3, '4':4, '5':5, '6':6, '7':7, '8':8, '9':9, '10':10, 'J':11, 'Q':12, 'K':13, 'A':14 };
 
-        // Variables globales para el estado del juego
-        let deck = []; /* Baraja completa de 52 cartas */
-        let playerHand = []; /* Cartas en la mano del jugador */
-        let communityCards = []; /* Cartas en la mesa (flop, turn, river) */
-        let numPlayers = 4; /* Número de jugadores por defecto */
-        let playerTurnIndex = 0; /* Tu turno (0-indexed) */
-        let currentRound = 'pre-flop'; /* pre-flop, flop, turn, river, showdown */
-        let isPlayerTurnToAct = false; /* Indica si es el turno del jugador para realizar una acción (Fold, Call, Raise) */
+
+        // Estado del juego
+        let deck = [];
+        let playerHand = []; // Tus 2 cartas
+        let communityCards = []; // Cartas en la mesa (Flop, Turn, River)
+        let numPlayers = 4; // Número de jugadores en la mesa
+        let playerTurnIndex = 0; // Tu posición en la mesa (0-indexed)
+        let currentRound = 'pre-flop'; // Ronda actual: pre-flop, flop, turn, river
+        let isPlayerTurnToAct = false; // Indica si es tu turno de apostar/actuar
+
+        // Selección temporal en modales
+        let tempSelectedHoleCards = [];
+        let tempSelectedCommunityCards = [];
+        let cardsToSelectForCommunity = 0;
 
         // Referencias a elementos del DOM
         const splashScreen = document.getElementById('splashScreen');
         const loadingScreen = document.getElementById('loadingScreen');
-        const appContainer = document.querySelector('.app-container'); /* Contenedor principal del juego */
+        const appContainer = document.getElementById('appContainer');
+        const matrixCanvas = document.getElementById('matrixCanvas'); 
+        const loadingMatrixCanvas = document.getElementById('loadingMatrixCanvas'); 
+        const loadingBar = document.getElementById('loadingBar'); 
 
-        const cardsDisplay = document.getElementById('deck-display'); /* Contenedor para mostrar el mazo completo */
-        const communityCardsDisplay = document.getElementById('community-cards'); /* Contenedor para las cartas de la mesa */
-        const playerHandDisplay = document.getElementById('player-hand'); /* Contenedor para la mano del jugador */
-        const strategyAdvice = document.getElementById('strategy-advice'); /* Área para mostrar consejos de estrategia */
+        const cardsDisplay = document.getElementById('deck-display'); 
+        const communityCardsDisplay = document.getElementById('community-cards');
+        const playerHandDisplay = document.getElementById('player-hand');
+        const strategyAdvice = document.getElementById('strategy-advice');
+        const communityPlaceholder = document.querySelector('.community-placeholder');
+        const playerHandPlaceholder = document.querySelector('.player-hand-placeholder');
 
-        // Botones de control del juego (referencias)
         const dealTurnBtn = document.getElementById('dealTurnBtn');
         const dealRiverBtn = document.getElementById('dealRiverBtn');
         const resetGameBtn = document.getElementById('resetGameBtn');
         const foldBtn = document.getElementById('foldBtn');
         const callBtn = document.getElementById('callBtn');
         const raiseBtn = document.getElementById('raiseBtn');
-        const infoBtnGame = document.getElementById('infoBtnGame'); /* Botón de información en el juego */
+        const infoBtnGame = document.getElementById('infoBtnGame');
 
-        // Modales y sus elementos (referencias)
         const setupModal = document.getElementById('setupModal');
         const numPlayersInput = document.getElementById('numPlayers');
         const playerTurnInput = document.getElementById('playerTurn');
@@ -794,153 +739,112 @@
         const modalDeckDisplay = document.getElementById('modal-deck-display');
         const selectedCardsCount = document.getElementById('selected-cards-count');
         const confirmHoleCardsBtn = document.getElementById('confirmHoleCardsBtn');
-        let tempSelectedHoleCards = []; /* Para la selección temporal en el modal de cartas iniciales */
 
         const selectCommunityCardsModal = document.getElementById('selectCommunityCardsModal');
         const modalCommunityDeckDisplay = document.getElementById('modal-community-deck-display');
         const selectedCommunityCardsCount = document.getElementById('selected-community-cards-count');
+        const cardsToSelectDisplay = document.getElementById('cards-to-select-display'); 
         const confirmCommunityCardsBtn = document.getElementById('confirmCommunityCardsBtn');
-        let tempSelectedCommunityCards = []; /* Para la selección temporal en el modal de cartas comunitarias */
-        let cardsToSelectForCommunity = 0; /* Cuántas cartas debe seleccionar el usuario para la mesa */
 
         const messageModal = document.getElementById('messageModal');
         const messageTitle = document.getElementById('messageTitle');
         const messageText = document.getElementById('messageText');
         const messageOkBtn = document.getElementById('messageOkBtn');
 
-        const infoModal = document.getElementById('infoModal'); /* Referencia al modal de información/estrategias */
+        const infoModal = document.getElementById('infoModal');
         const closeInfoModalBtn = document.getElementById('closeInfoModalBtn');
-
-        const aboutModal = document.getElementById('aboutModal'); /* Nuevo modal "Sobre Nosotros" */
+        const aboutModal = document.getElementById('aboutModal');
         const closeAboutModalBtn = document.getElementById('closeAboutModalBtn');
 
-        // Botones de la pantalla de inicio (referencias)
         const startGameSplashBtn = document.getElementById('startGameSplashBtn');
         const infoSplashBtn = document.getElementById('infoSplashBtn');
 
-        /**
-         * Genera la URL de la imagen de la carta desde el repositorio de GitHub.
-         * Fuente: https://github.com/richardschneider/cardsJS
-         * @param {string} suitCode - Código del palo (H, D, C, S)
-         * @param {string} rankCode - Código del rango (A, 2-10, J, Q, K)
-         * @returns {string} URL completa de la imagen SVG de la carta.
-         */
-        function getCardImageUrl(suitCode, rankCode) {
+        // --- Funciones de Utilidad y Juego ---
+        function getCardImageUrl(suitCode, rankCode) { 
             const rankChar = rankMap[rankCode];
             const suitChar = suitMap[suitCode];
+            if (!rankChar || !suitChar) { // Fallback por si acaso
+                console.error(`Invalid card for image: ${rankCode}${suitCode}`);
+                return 'https://placehold.co/60x90/CCCCCC/000000?text=Error';
+            }
             return `https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/${rankChar}${suitChar}.svg`;
         }
 
-        /**
-         * Muestra un modal con un mensaje personalizado.
-         * @param {string} title - Título del mensaje.
-         * @param {string} text - Contenido del mensaje.
-         */
+        function showModal(modalElement) {
+            modalElement.classList.remove('hidden');
+            modalElement.classList.remove('animate__fadeOutDown'); 
+            modalElement.classList.add('animate__fadeInUp'); 
+        }
+
+        function hideModal(modalElement) {
+            modalElement.classList.remove('animate__fadeInUp');
+            modalElement.classList.add('animate__fadeOutDown');
+            setTimeout(() => {
+                modalElement.classList.add('hidden');
+            }, 300); 
+        }
+        
         function showMessage(title, text) {
             messageTitle.textContent = title;
             messageText.textContent = text;
-            messageModal.classList.remove('hidden');
+            showModal(messageModal);
         }
 
-        /**
-         * Oculta el modal de mensaje.
-         */
-        function hideMessage() {
-            messageModal.classList.add('hidden');
-        }
-
-        /**
-         * Inicializa la baraja de 52 cartas.
-         * Las cartas se ordenan para facilitar la selección visual en los modales.
-         */
-        function initializeDeck() {
+        function initializeDeck() { 
             deck = [];
             suits.forEach(suit => {
                 ranks.forEach(rank => {
                     deck.push({ rank, suit, id: `${rank}${suit}` });
                 });
             });
-            // Ordenar las cartas por palo y luego por rango para facilitar la selección visual
-            deck.sort((a, b) => {
-                const suitOrder = { 'C': 1, 'D': 2, 'H': 3, 'S': 4 }; /* Orden de palos */
-                const rankOrder = { '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9, 'T': 10, 'J': 11, 'Q': 12, 'K': 13, 'A': 14 }; /* Orden de rangos */
-
+            // Orden visual del mazo para selección (opcional, pero consistente con v1.3)
+            deck.sort((a, b) => { 
+                const suitOrder = { 'C': 1, 'D': 2, 'H': 3, 'S': 4 };
                 if (suitOrder[a.suit] !== suitOrder[b.suit]) {
                     return suitOrder[a.suit] - suitOrder[b.suit];
                 }
-                return rankOrder[a.rank] - rankOrder[b.rank];
+                return rankOrder[b.rank] - rankOrder[a.rank]; 
             });
         }
-
-        /**
-         * Baraja la baraja de cartas usando el algoritmo Fisher-Yates.
-         * (Esta función se mantiene por si se necesita barajar en otro contexto,
-         * pero no se usa para la visualización inicial de cartas seleccionables).
-         */
-        function shuffleDeck() {
-            for (let i = deck.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [deck[i], deck[j]] = [deck[j], deck[i]]; /* Intercambia elementos */
-            }
-        }
-
-        /**
-         * Renderiza el mazo de cartas en el contenedor especificado.
-         * @param {HTMLElement} container - El elemento DOM donde se renderizarán las cartas.
-         * @param {Array} cardsToRender - El array de objetos de carta a renderizar.
-         * @param {boolean} selectable - Si las cartas son seleccionables (para modales).
-         * @param {Array} currentSelection - Array para almacenar las cartas seleccionadas.
-         * @param {number} maxSelection - Número máximo de cartas que se pueden seleccionar.
-         * @param {HTMLElement} countDisplay - Elemento para mostrar el conteo de selección.
-         * @param {HTMLElement} confirmButton - Botón para confirmar la selección.
-         */
+        
         function renderDeck(container, cardsToRender, selectable = false, currentSelection = [], maxSelection = 0, countDisplay = null, confirmButton = null) {
-            container.innerHTML = ''; /* Limpia el contenedor */
-            cardsToRender.forEach(card => {
+            container.innerHTML = ''; 
+            cardsToRender.forEach((cardData, index) => {
                 const cardDiv = document.createElement('div');
-                cardDiv.className = 'card';
-                cardDiv.dataset.cardId = card.id; /* Guarda el ID de la carta en el dataset */
-                cardDiv.innerHTML = `<img src="${getCardImageUrl(card.suit, card.rank)}" alt="${card.rank} de ${suitMap[card.suit]}" onerror="this.onerror=null;this.src='https://placehold.co/60x90/CCCCCC/000000?text=Error';">`;
+                cardDiv.className = 'card touch-optimized'; 
+                cardDiv.dataset.cardId = cardData.id;
+                cardDiv.innerHTML = `<img src="${getCardImageUrl(cardData.suit, cardData.rank)}" alt="${cardData.rank} de ${suitMap[cardData.suit]}" onerror="this.onerror=null;this.src='https://placehold.co/60x90/CCCCCC/000000?text=Error';">`;
                 
+                if (container.classList.contains('deck-display-shuffling')) { 
+                    cardDiv.style.setProperty('--card-delay', `${index * 0.02}s`); 
+                }
+
                 if (selectable) {
-                    cardDiv.classList.add('cursor-pointer');
-                    // Si la carta ya está seleccionada, la marca visualmente
-                    if (currentSelection.some(c => c.id === card.id)) {
+                    if (currentSelection.some(c => c.id === cardData.id)) {
                         cardDiv.classList.add('selected');
                     }
                     cardDiv.addEventListener('click', () => {
-                        toggleCardSelection(card, cardDiv, currentSelection, maxSelection, countDisplay, confirmButton);
+                        toggleCardSelection(cardData, cardDiv, currentSelection, maxSelection, countDisplay, confirmButton);
                     });
                 } else {
-                    cardDiv.classList.add('!cursor-default'); /* No seleccionable */
+                    cardDiv.classList.add('cursor-default');
                 }
                 container.appendChild(cardDiv);
             });
         }
 
-        /**
-         * Maneja la selección de una carta en un modal.
-         * @param {Object} card - Objeto de la carta seleccionada.
-         * @param {HTMLElement} cardDiv - Elemento DOM de la carta.
-         * @param {Array} currentSelection - Array donde se almacenan las cartas seleccionadas.
-         * @param {number} maxSelection - Número máximo de cartas que se pueden seleccionar.
-         * @param {HTMLElement} countDisplay - Elemento para mostrar el conteo de selección.
-         * @param {HTMLElement} confirmButton - Botón para confirmar la selección.
-         */
-        function toggleCardSelection(card, cardDiv, currentSelection, maxSelection, countDisplay, confirmButton) {
+        function toggleCardSelection(card, cardDiv, currentSelection, maxSelection, countDisplay, confirmButton) { 
             const index = currentSelection.findIndex(c => c.id === card.id);
             if (index > -1) {
-                // La carta ya está seleccionada, la deselecciona
                 currentSelection.splice(index, 1);
                 cardDiv.classList.remove('selected');
             } else {
-                // La carta no está seleccionada, la selecciona si no se ha alcanzado el límite
                 if (currentSelection.length < maxSelection) {
                     currentSelection.push(card);
                     cardDiv.classList.add('selected');
                 } else {
-                    showMessage('Límite de Selección', `Solo puedes seleccionar ${maxSelection} cartas.`);
-                    return; /* No hace nada si el límite ya fue alcanzado */
+                    showMessage('Límite Alcanzado', `Solo puedes seleccionar ${maxSelection} cartas.`);
+                    return;
                 }
             }
             if (countDisplay) {
@@ -951,318 +855,233 @@
             }
         }
 
-        /**
-         * Elimina las cartas seleccionadas del mazo principal.
-         * @param {Array} selectedCards - Array de cartas a eliminar del mazo.
-         */
-        function removeCardsFromDeck(selectedCards) {
+        function removeCardsFromDeck(selectedCards) { 
             deck = deck.filter(card => !selectedCards.some(selected => selected.id === card.id));
         }
 
-        /**
-         * Renderiza las cartas de la mano del jugador.
-         */
         function renderPlayerHand() {
             playerHandDisplay.innerHTML = '';
-            if (playerHand.length === 0) {
-                playerHandDisplay.innerHTML = '<p class="text-gray-400">Tu Mano</p>';
-                return;
-            }
-            playerHand.forEach(card => {
+            if (playerHand.length > 0 && playerHandPlaceholder) playerHandPlaceholder.classList.add('hidden');
+            else if (playerHandPlaceholder) playerHandPlaceholder.classList.remove('hidden');
+
+            playerHand.forEach((card, index) => {
+                const slot = document.createElement('div');
+                slot.className = 'player-hand-slot';
                 const cardDiv = document.createElement('div');
-                cardDiv.className = 'card !cursor-default'; /* No seleccionable */
+                cardDiv.className = 'card cursor-default'; 
+                cardDiv.style.setProperty('--card-delay', `${index * 0.1}s`); 
                 cardDiv.innerHTML = `<img src="${getCardImageUrl(card.suit, card.rank)}" alt="${card.rank} de ${suitMap[card.suit]}">`;
-                playerHandDisplay.appendChild(cardDiv);
+                slot.appendChild(cardDiv);
+                playerHandDisplay.appendChild(slot);
             });
         }
 
-        /**
-         * Renderiza las cartas de la mesa (community cards).
-         */
         function renderCommunityCards() {
             communityCardsDisplay.innerHTML = '';
-            if (communityCards.length === 0) {
-                communityCardsDisplay.innerHTML = '<p class="text-gray-400">Cartas de la Mesa</p>';
-                return;
-            }
-            communityCards.forEach(card => {
+             if (communityCards.length > 0 && communityPlaceholder) communityPlaceholder.classList.add('hidden');
+             else if (communityPlaceholder) communityPlaceholder.classList.remove('hidden');
+
+            communityCards.forEach((card, index) => {
+                const slot = document.createElement('div');
+                slot.className = 'community-card-slot';
                 const cardDiv = document.createElement('div');
-                cardDiv.className = 'community-card'; /* Clase para la animación de caída */
+                cardDiv.className = 'card cursor-default'; 
+                cardDiv.style.setProperty('--card-delay', `${index * 0.1}s`); 
                 cardDiv.innerHTML = `<img src="${getCardImageUrl(card.suit, card.rank)}" alt="${card.rank} de ${suitMap[card.suit]}">`;
-                communityCardsDisplay.appendChild(cardDiv);
+                slot.appendChild(cardDiv);
+                communityCardsDisplay.appendChild(slot);
             });
         }
-
-        /**
-         * Habilita/deshabilita los botones de control según el estado del juego.
-         */
-        function updateControlButtons() {
-            // El botón de Reiniciar Juego siempre está disponible una vez que el juego ha comenzado
-            resetGameBtn.disabled = (playerHand.length === 0 && communityCards.length === 0);
-
-            // Botones de repartir (Turn, River)
-            dealTurnBtn.disabled = !(currentRound === 'flop' && communityCards.length === 3 && !isPlayerTurnToAct);
-            dealRiverBtn.disabled = !(currentRound === 'turn' && communityCards.length === 4 && !isPlayerTurnToAct);
-
-            // Botones de acción (Fold, Call, Raise)
+        
+        function updateControlButtons() { 
+            resetGameBtn.disabled = (playerHand.length === 0 && communityCards.length === 0 && currentRound === 'pre-flop');
+            dealTurnBtn.disabled = !(currentRound === 'flop' && communityCards.length === 3 && playerHand.length === 2 && !isPlayerTurnToAct);
+            dealRiverBtn.disabled = !(currentRound === 'turn' && communityCards.length === 4 && playerHand.length === 2 && !isPlayerTurnToAct);
             foldBtn.disabled = !isPlayerTurnToAct;
             callBtn.disabled = !isPlayerTurnToAct;
             raiseBtn.disabled = !isPlayerTurnToAct;
         }
 
-        /**
-         * Muestra el modal de configuración inicial.
-         */
-        function showSetupModal() {
-            setupModal.classList.remove('hidden');
-        }
-
-        /**
-         * Muestra el modal para seleccionar tus cartas iniciales.
-         */
-        function showSelectHoleCardsModal() {
-            tempSelectedHoleCards = []; /* Reinicia la selección temporal */
+        function showSelectHoleCardsModal() { 
+            tempSelectedHoleCards = [];
             selectedCardsCount.textContent = 'Cartas seleccionadas: 0/2';
             confirmHoleCardsBtn.disabled = true;
-            modalDeckDisplay.innerHTML = ''; /* Limpia el modal */
-            // Clona el mazo actual para la selección en el modal
             renderDeck(modalDeckDisplay, deck, true, tempSelectedHoleCards, 2, selectedCardsCount, confirmHoleCardsBtn);
-            selectHoleCardsModal.classList.remove('hidden');
+            showModal(selectHoleCardsModal);
         }
 
-        /**
-         * Muestra el modal para seleccionar las cartas de la mesa.
-         * @param {number} numCards - Número de cartas a seleccionar (3 para flop, 1 para turn/river).
-         */
-        function showSelectCommunityCardsModal(numCards) {
+        function showSelectCommunityCardsModal(numCards) { 
             cardsToSelectForCommunity = numCards;
-            tempSelectedCommunityCards = []; /* Reinicia la selección temporal */
+            tempSelectedCommunityCards = [];
+            if(cardsToSelectDisplay) cardsToSelectDisplay.textContent = numCards; 
             selectedCommunityCardsCount.textContent = `Cartas a seleccionar: 0/${numCards}`;
             confirmCommunityCardsBtn.disabled = true;
-            modalCommunityDeckDisplay.innerHTML = ''; /* Limpia el modal */
-            // Clona el mazo actual para la selección en el modal
             renderDeck(modalCommunityDeckDisplay, deck, true, tempSelectedCommunityCards, numCards, selectedCommunityCardsCount, confirmCommunityCardsBtn);
-            selectCommunityCardsModal.classList.remove('hidden');
+            showModal(selectCommunityCardsModal);
         }
-
-        /**
-         * Funciones de ayuda para la evaluación de manos (simplificadas para consejos de estrategia)
-         */
-        function getRankCounts(cards) {
-            const counts = {};
-            cards.forEach(card => {
-                counts[card.rank] = (counts[card.rank] || 0) + 1;
-            });
-            return counts;
-        }
-
-        function getSuitCounts(cards) {
-            const counts = {};
-            cards.forEach(card => {
-                counts[card.suit] = (counts[card.suit] || 0) + 1;
-            });
-            return counts;
-        }
-
-        function hasNOfAKind(cards, n) {
-            const counts = getRankCounts(cards);
-            for (const rank in counts) {
-                if (counts[rank] >= n) return true;
+        
+        function giveStrategyAdvice(finalHandName = null) { 
+            let advice = "Analiza la situación y actúa con inteligencia.";
+            
+            if (finalHandName) {
+                strategyAdvice.innerHTML = `<p class="animate__animated animate__fadeIn"><strong>¡Juego Terminado!</strong> Tu mejor mano: <strong class="text-yellow-300">${finalHandName}</strong>.</p>`;
+                return;
             }
-            return false;
-        }
-
-        function isFlush(cards) {
-            const counts = getSuitCounts(cards);
-            for (const suit in counts) {
-                if (counts[suit] >= 5) return true;
-            }
-            return false;
-        }
-
-        function isStraight(cards) {
-            const rankValues = cards.map(card => {
-                if (card.rank === 'A') return 14; /* El As puede ser alto o bajo */
-                if (card.rank === 'K') return 13;
-                if (card.rank === 'Q') return 12;
-                if (card.rank === 'J') return 11;
-                return parseInt(card.rank);
-            }).sort((a, b) => a - b);
-
-            // Maneja el As como bajo (1) para escaleras como A-2-3-4-5
-            let adjustedRankValues = [...rankValues];
-            if (rankValues.includes(14)) {
-                adjustedRankValues.unshift(1); /* Añade 1 para el As bajo */
-            }
-            adjustedRankValues = [...new Set(adjustedRankValues)].sort((a, b) => a - b); /* Elimina duplicados y ordena */
-
-            if (adjustedRankValues.length < 5) return false;
-
-            for (let i = 0; i <= adjustedRankValues.length - 5; i++) {
-                let consecutive = true;
-                for (let j = 0; j < 4; j++) {
-                    if (adjustedRankValues[i + j + 1] !== adjustedRankValues[i + j] + 1) {
-                        consecutive = false;
-                        break;
-                    }
-                }
-                if (consecutive) return true;
-            }
-            return false;
-        }
-
-        /**
-         * Calcula y muestra un consejo de estrategia basado en las cartas actuales.
-         * Esta es una versión simplificada de la lógica de probabilidad.
-         */
-        function giveStrategyAdvice() {
-            let advice = "No hay suficiente información para un consejo.";
-            const allCards = [...playerHand, ...communityCards];
 
             if (isPlayerTurnToAct) {
                 if (playerHand.length === 2 && communityCards.length === 0) {
-                    // Pre-flop (justo después de seleccionar las cartas iniciales, antes de cualquier carta comunitaria)
                     const [card1, card2] = playerHand;
-                    if (card1.rank === card2.rank) {
-                        advice = "¡Tienes un par de mano! Considera subir la apuesta.";
-                    } else if (card1.suit === card2.suit) {
-                        advice = "Tienes cartas del mismo palo. Potencial para color.";
-                    } else if (['A', 'K', 'Q', 'J'].includes(card1.rank) || ['A', 'K', 'Q', 'J'].includes(card2.rank)) {
-                        advice = "Tienes cartas altas. Juega con cautela o sube si son muy fuertes.";
-                    } else {
-                        advice = "Cartas iniciales promedio. Observa las apuestas.";
-                    }
+                    if (card1.rank === card2.rank) advice = "¡Par en mano! Considera subir.";
+                    else if (card1.suit === card2.suit) advice = "Cartas del mismo palo. ¡Proyecto de color!";
+                    else if (['A', 'K', 'Q', 'J'].includes(card1.rank) || ['A', 'K', 'Q', 'J'].includes(card2.rank)) advice = "Cartas altas. Juega con astucia.";
+                    else advice = "Mano inicial. Observa a tus oponentes.";
                 } else if (playerHand.length === 2 && communityCards.length >= 3) {
-                    // Después del flop, turn o river
-                    const currentCards = [...playerHand, ...communityCards];
-                    const rankCounts = getRankCounts(currentCards);
-                    const suitCounts = getSuitCounts(currentCards);
-
-                    // Comprobar manos hechas
-                    if (isFlush(currentCards)) {
-                        advice = "¡Tienes un COLOR! Es una mano muy fuerte. ¡Apostar fuerte!";
-                    } else if (isStraight(currentCards)) {
-                        advice = "¡Tienes una ESCALERA! Considera apostar para maximizar ganancias.";
-                    } else if (hasNOfAKind(currentCards, 4)) {
-                        advice = "¡Tienes PÓKER! ¡Felicidades, esta es una mano casi invencible!";
-                    } else if (hasNOfAKind(currentCards, 3) && hasNOfAKind(currentCards.filter(c => rankCounts[c.rank] < 3), 2)) { /* Comprueba si hay Full House */
-                        advice = "¡Tienes un FULL! Una mano muy potente. ¡Apostar fuerte!";
-                    } else if (hasNOfAKind(currentCards, 3)) {
-                        advice = "¡Tienes un TRÍO! Buena mano, evalúa el board.";
-                    } else if (Object.values(rankCounts).filter(count => count >= 2).length >= 2) { /* Comprueba si hay Doble Pareja */
-                        advice = "¡Tienes DOBLE PAREJA! Es una mano sólida.";
-                    } else if (hasNOfAKind(currentCards, 2)) {
-                        advice = "Tienes una PAREJA. Evalúa la fuerza de tu kicker y el board.";
-                    } else {
-                        advice = "Tienes CARTA ALTA. Considera retirarte si la apuesta es alta.";
-                    }
-
-                    // Si no hay una mano hecha y no es el river, buscar proyectos
-                    if (communityCards.length < 5) {
-                        let hasFlushDraw = false;
-                        for (const suit in suitCounts) {
-                            if (suitCounts[suit] === 4) { /* 4 cartas del mismo palo = proyecto de color */
-                                hasFlushDraw = true;
-                                break;
-                            }
-                        }
-
-                        // Simplificación para proyecto de escalera (más complejo de calcular exactamente)
-                        const sortedRanks = [...new Set(currentCards.map(c => {
-                            if (c.rank === 'A') return 14;
-                            if (c.rank === 'K') return 13;
-                            if (c.rank === 'Q') return 12;
-                            if (c.rank === 'J') return 11;
-                            return parseInt(c.rank);
-                        }).sort((a,b)=>a-b))];
-                        let hasStraightDraw = false;
-                        if (sortedRanks.length >= 4) {
-                            for(let i=0; i <= sortedRanks.length - 4; i++) {
-                                // Simple check for open-ended or gutshot draw
-                                if ((sortedRanks[i+3] - sortedRanks[i] <= 4) && (sortedRanks[i+3] - sortedRanks[i] >= 3)) {
-                                    hasStraightDraw = true;
-                                    break;
-                                }
-                            }
-                        }
-
-                        if (hasFlushDraw && hasStraightDraw) {
-                            advice += " ¡Tienes un PROYECTO DE ESCALERA Y COLOR! Muy buenas probabilidades.";
-                        } else if (hasFlushDraw) {
-                            advice += " ¡Tienes un PROYECTO DE COLOR! Buenas probabilidades de mejorar.";
-                        } else if (hasStraightDraw) {
-                            advice += " ¡Tienes un PROYECTO DE ESCALERA! Considera tus outs.";
-                        }
-                    }
+                    const tempBestHand = evaluateBestHand(playerHand, communityCards); // Evalúa la mano actual
+                    if (tempBestHand.rankValue >= 6) advice = `¡Tienes ${tempBestHand.name}! Mano muy fuerte.`; // Flush o mejor
+                    else if (tempBestHand.rankValue >= 3) advice = `Llevas ${tempBestHand.name}. Buena mano.`; // Two Pair o mejor
+                    else advice = "Evalúa el board y las apuestas. ¿Tienes outs?";
                 }
-                strategyAdvice.textContent = `¡ES TU TURNO! Consejo: ${advice}`;
+                strategyAdvice.innerHTML = `<p class="animate__animated animate__fadeIn"><strong>¡ES TU TURNO!</strong> Consejo: ${advice}</p>`;
             } else {
-                if (currentRound === 'pre-flop' && communityCards.length === 0) {
-                    strategyAdvice.textContent = 'Configura el juego para empezar.'; /* Estado inicial, esperando configuración */
-                } else if (currentRound === 'flop' && playerHand.length === 0) {
-                    strategyAdvice.textContent = 'Selecciona tus 2 cartas iniciales para jugar.';
-                } else if (currentRound === 'flop' && communityCards.length === 3) {
-                    strategyAdvice.textContent = 'Espera tu turno de acción o reparte el Turn.';
-                } else if (currentRound === 'turn' && communityCards.length === 4) {
-                    strategyAdvice.textContent = 'Espera tu turno de acción o reparte el River.';
-                } else if (currentRound === 'river' && communityCards.length === 5) {
-                    strategyAdvice.textContent = 'Espera tu turno de acción o el Showdown.';
-                } else {
-                    strategyAdvice.textContent = 'Esperando la siguiente acción...';
-                }
+                if (currentRound === 'pre-flop' && communityCards.length === 0 && playerHand.length === 0) strategyAdvice.textContent = 'Configura el juego para empezar.';
+                else if (currentRound === 'flop' && playerHand.length === 0) strategyAdvice.textContent = 'Selecciona tus 2 cartas iniciales.';
+                else if (currentRound === 'flop' && communityCards.length === 3) strategyAdvice.textContent = 'Flop en la mesa. Espera tu turno o reparte el Turn.';
+                else if (currentRound === 'turn' && communityCards.length === 4) strategyAdvice.textContent = 'Turn revelado. Espera tu turno o reparte el River.';
+                else if (currentRound === 'river' && communityCards.length === 5) strategyAdvice.textContent = 'River en la mesa. Última ronda de apuestas.';
+                else strategyAdvice.textContent = 'Esperando la siguiente acción...';
             }
         }
 
-        /**
-         * Inicia un nuevo juego.
-         * Se llama automáticamente al cargar la app principal desde la splash screen.
-         */
-        function startGame() {
-            initializeDeck(); /* Inicializa y ordena el mazo */
+        // --- LÓGICA DE EVALUACIÓN DE MANOS ---
+        function getCombinations(arr, k) { // Genera todas las combinaciones de k elementos de un array
+            if (k === 0) return [[]];
+            if (arr.length < k) return [];
+            const first = arr[0];
+            const rest = arr.slice(1);
+            const combsWithoutFirst = getCombinations(rest, k);
+            const combsWithFirst = getCombinations(rest, k - 1).map(comb => [first, ...comb]);
+            return [...combsWithFirst, ...combsWithoutFirst];
+        }
+
+        function evaluateHand(hand) { // Evalúa una mano de 5 cartas
+            const counts = {}; // Conteo de rangos
+            const suitsInHand = {}; // Conteo de palos
+            hand.forEach(card => {
+                counts[card.rank] = (counts[card.rank] || 0) + 1;
+                suitsInHand[card.suit] = (suitsInHand[card.suit] || 0) + 1;
+            });
+
+            const numericRanks = hand.map(card => rankOrder[card.rank]).sort((a, b) => a - b);
+            const uniqueNumericRanks = [...new Set(numericRanks)];
+
+            const isFlush = Object.values(suitsInHand).some(count => count >= 5);
+            
+            let isStraight = false;
+            if (uniqueNumericRanks.length >= 5) {
+                for (let i = 0; i <= uniqueNumericRanks.length - 5; i++) {
+                    let straightCheck = true;
+                    for (let j = 0; j < 4; j++) {
+                        if (uniqueNumericRanks[i+j+1] !== uniqueNumericRanks[i+j] + 1) {
+                            straightCheck = false;
+                            break;
+                        }
+                    }
+                    if (straightCheck) {
+                        isStraight = true;
+                        break;
+                    }
+                }
+                // Check for A-2-3-4-5 straight (Ace as 1)
+                if (!isStraight && uniqueNumericRanks.includes(14) && uniqueNumericRanks.includes(2) && uniqueNumericRanks.includes(3) && uniqueNumericRanks.includes(4) && uniqueNumericRanks.includes(5)) {
+                    isStraight = true;
+                }
+            }
+
+            const rankValues = Object.values(counts);
+
+            if (isStraight && isFlush) {
+                // Royal Flush check (A, K, Q, J, 10 of same suit)
+                const isRoyal = numericRanks.includes(10) && numericRanks.includes(11) && numericRanks.includes(12) && numericRanks.includes(13) && numericRanks.includes(14);
+                return isRoyal ? { name: "Escalera Real de Color", rankValue: 10 } : { name: "Escalera de Color", rankValue: 9 };
+            }
+            if (rankValues.includes(4)) return { name: "Póker", rankValue: 8 };
+            if (rankValues.includes(3) && rankValues.includes(2)) return { name: "Full House", rankValue: 7 };
+            if (isFlush) return { name: "Color", rankValue: 6 };
+            if (isStraight) return { name: "Escalera", rankValue: 5 };
+            if (rankValues.includes(3)) return { name: "Trío", rankValue: 4 };
+            if (rankValues.filter(v => v === 2).length === 2) return { name: "Doble Pareja", rankValue: 3 };
+            if (rankValues.includes(2)) return { name: "Pareja", rankValue: 2 };
+            
+            return { name: "Carta Alta", rankValue: 1, highCard: Math.max(...numericRanks) };
+        }
+
+        function evaluateBestHand(holeCards, boardCards) {
+            if (holeCards.length !== 2 || boardCards.length < 3) { // Necesita al menos el flop
+                 return { name: "Insuficientes cartas", rankValue: 0 };
+            }
+            const sevenCards = [...holeCards, ...boardCards];
+            const fiveCardCombinations = getCombinations(sevenCards, 5);
+            
+            let bestHand = { name: "Carta Alta", rankValue: 0 };
+            fiveCardCombinations.forEach(combo => {
+                const evaluated = evaluateHand(combo);
+                if (evaluated.rankValue > bestHand.rankValue) {
+                    bestHand = evaluated;
+                } 
+                // Simple tie-breaking for high card if ranks are same (not fully implemented for all hand types)
+                else if (evaluated.rankValue === bestHand.rankValue && evaluated.rankValue === 1) { 
+                    if (evaluated.highCard > (bestHand.highCard || 0)) {
+                        bestHand = evaluated;
+                    }
+                }
+            });
+            return bestHand;
+        }
+        // --- FIN LÓGICA DE EVALUACIÓN DE MANOS ---
+
+        function startGameFlow() { 
+            initializeDeck();
             playerHand = [];
             communityCards = [];
             currentRound = 'pre-flop';
-            isPlayerTurnToAct = false; /* No es el turno de acción al inicio */
+            isPlayerTurnToAct = false;
             renderPlayerHand();
             renderCommunityCards();
             strategyAdvice.textContent = 'Barajando las cartas...';
+            
+            hideModal(splashScreen); 
+            showModal(loadingScreen); 
+            startLoadingMatrixAnimation(); 
 
-            // Ocultar la pantalla de inicio y mostrar la de carga
-            splashScreen.classList.add('hidden');
-            loadingScreen.classList.remove('hidden');
-            startLoadingMatrixAnimation(); /* Inicia la animación de Matrix en la pantalla de carga */
-
-            // Simular tiempo de carga para una mejor experiencia de usuario
-            setTimeout(() => {
-                loadingScreen.classList.add('hidden');
-                stopLoadingMatrixAnimation(); /* Detiene la animación de Matrix en la pantalla de carga */
-                appContainer.classList.remove('hidden'); /* Muestra el contenedor principal del juego */
-
-                // 1. Mostrar el mazo completo y aplicar animación de barajado
-                cardsDisplay.classList.remove('hidden-collapsed'); /* Hace visible el mazo completo */
-                renderDeck(cardsDisplay, deck, false); /* Renderiza todas las 52 cartas, no seleccionables inicialmente */
-
-                // Aplicar animación de barajado visual
-                cardsDisplay.classList.add('shuffling');
-                const cardsInDeckDisplay = cardsDisplay.querySelectorAll('.card');
-                cardsInDeckDisplay.forEach((cardDiv, index) => {
-                    cardDiv.style.setProperty('--card-delay', `${index * 0.01}s`); /* Retraso escalonado para cada carta */
-                });
-
-                // 2. Después de la animación, mostrar el modal de configuración
-                setTimeout(() => {
-                    cardsDisplay.classList.remove('shuffling'); /* Quitar la clase de animación */
-                    showSetupModal(); /* Muestra el modal para configurar el número de jugadores y turno */
-                    updateControlButtons(); /* Actualiza el estado de los botones de control */
-                    strategyAdvice.textContent = 'Configura el juego para empezar.';
-                }, 1800); /* Duración de la animación + un pequeño margen */
-            }, 2000); /* Duración total de la pantalla de carga */
+            let progress = 0;
+            loadingBar.style.width = '0%';
+            const loadingInterval = setInterval(() => {
+                progress += 10; 
+                loadingBar.style.width = `${progress}%`;
+                if (progress >= 100) {
+                    clearInterval(loadingInterval);
+                    setTimeout(() => {
+                        hideModal(loadingScreen);
+                        stopLoadingMatrixAnimation();
+                        appContainer.classList.remove('hidden');
+                        appContainer.classList.add('animate__animated', 'animate__fadeIn');
+                        
+                        cardsDisplay.classList.remove('hidden-collapsed');
+                        renderDeck(cardsDisplay, deck, false); 
+                        cardsDisplay.classList.add('deck-display-shuffling'); 
+                        
+                        setTimeout(() => {
+                            cardsDisplay.classList.remove('deck-display-shuffling');
+                            showModal(setupModal);
+                            updateControlButtons();
+                            giveStrategyAdvice();
+                        }, 1200); 
+                    }, 500);
+                }
+            }, 150);
         }
 
-        /**
-         * Reinicia el juego a su estado inicial.
-         */
-        function resetGame() {
+        function resetGame() { 
             initializeDeck();
             playerHand = [];
             communityCards = [];
@@ -1271,291 +1090,189 @@
             renderPlayerHand();
             renderCommunityCards();
             strategyAdvice.textContent = 'Esperando el inicio del juego...';
-            cardsDisplay.classList.add('hidden-collapsed'); /* Asegura que el mazo completo esté oculto al reiniciar */
+            cardsDisplay.classList.add('hidden-collapsed');
             updateControlButtons();
-            showMessage('Juego Reiniciado', '¡El juego ha sido reiniciado! Configura el juego para empezar una nueva partida.');
-            showSetupModal(); /* Muestra el modal de configuración de nuevo */
+            showMessage('Juego Reiniciado', 'Configura una nueva partida.');
+            showModal(setupModal);
         }
 
-        /**
-         * Reparte el Turn (1 carta comunitaria).
-         * Este botón ahora activa el modal para que el usuario seleccione la carta.
-         */
-        function dealTurn() {
-            if (currentRound !== 'flop' || communityCards.length !== 3) {
-                showMessage('Error', 'El Flop debe estar en la mesa (3 cartas) antes de repartir el Turn.');
-                return;
-            }
-            if (isPlayerTurnToAct) {
-                 showMessage('Error', 'Debes realizar tu acción de apuesta (Fold, Call, Raise) antes de repartir el Turn.');
-                 return;
-            }
-            showMessage('Selección de Turn', 'Por favor, selecciona la carta del Turn que ha salido en la mesa.');
-            showSelectCommunityCardsModal(1); /* Pide al usuario que seleccione 1 carta */
-            updateControlButtons(); /* Deshabilita el botón de repartir Turn */
+        function dealTurn() { 
+            if (currentRound !== 'flop' || communityCards.length !== 3) { showMessage('Error', 'Flop debe tener 3 cartas.'); return; }
+            if (isPlayerTurnToAct) { showMessage('Acción Pendiente', 'Realiza tu apuesta antes del Turn.'); return; }
+            showMessage('Selección de Turn', 'Selecciona la carta del Turn.');
+            showSelectCommunityCardsModal(1);
+            updateControlButtons();
         }
 
-        /**
-         * Reparte el River (1 carta comunitaria).
-         * Este botón ahora activa el modal para que el usuario seleccione la carta.
-         */
-        function dealRiver() {
-            if (currentRound !== 'turn' || communityCards.length !== 4) {
-                showMessage('Error', 'El Turn debe estar en la mesa (4 cartas) antes de repartir el River.');
-                return;
+        function dealRiver() { 
+            if (currentRound !== 'turn' || communityCards.length !== 4) { showMessage('Error', 'Turn debe tener 4 cartas.'); return; }
+            if (isPlayerTurnToAct) { showMessage('Acción Pendiente', 'Realiza tu apuesta antes del River.'); return; }
+            showMessage('Selección de River', 'Selecciona la carta del River.');
+            showSelectCommunityCardsModal(1);
+            updateControlButtons();
+        }
+        
+        function finalizeRoundActions() {
+            isPlayerTurnToAct = false;
+            updateControlButtons();
+            if (currentRound === 'river' && playerHand.length === 2 && communityCards.length === 5) {
+                const bestHandDetails = evaluateBestHand(playerHand, communityCards);
+                giveStrategyAdvice(bestHandDetails.name); // Muestra la mano final
+            } else {
+                giveStrategyAdvice(); // Consejo normal para la ronda
             }
-            if (isPlayerTurnToAct) {
-                 showMessage('Error', 'Debes realizar tu acción de apuesta (Fold, Call, Raise) antes de repartir el River.');
-                 return;
-            }
-            showMessage('Selección de River', 'Por favor, selecciona la carta del River que ha salido en la mesa.');
-            showSelectCommunityCardsModal(1); /* Pide al usuario que seleccione 1 carta */
-            updateControlButtons(); /* Deshabilita el botón de repartir River */
         }
 
-        // --- Event Listeners (Manejadores de eventos) ---
+
+        // --- Event Listeners ---
+        startGameSplashBtn.addEventListener('click', startGameFlow);
+        infoSplashBtn.addEventListener('click', () => showModal(aboutModal));
+        closeAboutModalBtn.addEventListener('click', () => hideModal(aboutModal));
+        
         resetGameBtn.addEventListener('click', resetGame);
         dealTurnBtn.addEventListener('click', dealTurn);
         dealRiverBtn.addEventListener('click', dealRiver);
-        infoBtnGame.addEventListener('click', () => infoModal.classList.remove('hidden')); /* Muestra el modal de información/estrategias */
-        closeInfoModalBtn.addEventListener('click', () => infoModal.classList.add('hidden')); /* Cierra el modal de información/estrategias */
+        infoBtnGame.addEventListener('click', () => showModal(infoModal));
+        closeInfoModalBtn.addEventListener('click', () => hideModal(infoModal));
+        messageOkBtn.addEventListener('click', () => hideModal(messageModal));
 
-        messageOkBtn.addEventListener('click', hideMessage); /* Cierra el modal de mensajes */
-
-        // Evento para guardar la configuración inicial del juego
         saveSetupBtn.addEventListener('click', () => {
             const playersVal = parseInt(numPlayersInput.value);
             const turnVal = parseInt(playerTurnInput.value);
-
-            if (isNaN(playersVal) || playersVal < 2 || playersVal > 9) {
-                showMessage('Error de Configuración', 'El número de jugadores debe estar entre 2 y 9.');
-                return;
-            }
-            if (isNaN(turnVal) || turnVal < 1 || turnVal > playersVal) {
-                showMessage('Error de Configuración', `Tu turno debe estar entre 1 y ${playersVal}.`);
-                return;
-            }
-
+            if (isNaN(playersVal) || playersVal < 2 || playersVal > 9) { showMessage('Error', 'Jugadores debe ser entre 2 y 9.'); return; }
+            if (isNaN(turnVal) || turnVal < 1 || turnVal > playersVal) { showMessage('Error', `Tu turno debe ser entre 1 y ${playersVal}.`); return; }
             numPlayers = playersVal;
-            playerTurnIndex = turnVal - 1; /* 0-indexed para el array de turnos */
-            setupModal.classList.add('hidden');
-            // Después de la configuración, el usuario selecciona el Flop primero, como se solicitó
-            showMessage('Configuración Guardada', `Número de jugadores: ${numPlayers}, Tu turno: ${turnVal}. Ahora selecciona las 3 cartas del Flop.`);
-            currentRound = 'pre-flop'; /* Asegura que la ronda sea 'pre-flop' antes de seleccionar el flop */
-            showSelectCommunityCardsModal(3); /* Pide al usuario que seleccione 3 cartas para el flop */
-            updateControlButtons(); /* Actualiza el estado de los botones */
-            giveStrategyAdvice(); /* Actualiza el mensaje de consejo inicial */
+            playerTurnIndex = turnVal - 1;
+            hideModal(setupModal);
+            showMessage('Configuración Guardada', `Jugadores: ${numPlayers}, Tu turno: ${turnVal}. Selecciona las 3 cartas del Flop.`);
+            currentRound = 'pre-flop'; 
+            showSelectCommunityCardsModal(3); 
+            updateControlButtons();
+            giveStrategyAdvice();
         });
 
-        // Evento para confirmar las cartas iniciales del jugador (Hole Cards)
         confirmHoleCardsBtn.addEventListener('click', () => {
             if (tempSelectedHoleCards.length === 2) {
                 playerHand = [...tempSelectedHoleCards];
-                removeCardsFromDeck(playerHand); /* Quita las cartas seleccionadas del mazo */
+                removeCardsFromDeck(playerHand);
                 renderPlayerHand();
-                // Ocultar el mazo completo después de seleccionar las cartas de mano
                 cardsDisplay.classList.add('hidden-collapsed'); 
-                selectHoleCardsModal.classList.add('hidden');
-                
-                isPlayerTurnToAct = true; /* Es el turno del jugador para actuar después de tener sus cartas */
-                strategyAdvice.textContent = 'Cartas iniciales seleccionadas. ¡Es tu turno de apostar!';
-                giveStrategyAdvice(); /* Da el primer consejo de acción */
+                hideModal(selectHoleCardsModal);
+                isPlayerTurnToAct = true;
+                // strategyAdvice.textContent = 'Cartas seleccionadas. ¡Tu turno de apostar!';
+                giveStrategyAdvice();
                 updateControlButtons();
-            } else {
-                showMessage('Selección Incompleta', 'Por favor, selecciona exactamente 2 cartas.');
-            }
+            } else { showMessage('Error', 'Selecciona exactamente 2 cartas.'); }
         });
 
-        // Evento para confirmar las cartas de la mesa (Flop, Turn, River)
         confirmCommunityCardsBtn.addEventListener('click', () => {
             if (tempSelectedCommunityCards.length === cardsToSelectForCommunity) {
-                // Añadir las cartas comunitarias seleccionadas al array principal
                 communityCards.push(...tempSelectedCommunityCards);
-                // Eliminarlas del mazo principal para que no se puedan volver a seleccionar
                 removeCardsFromDeck(tempSelectedCommunityCards);
-                // Volver a renderizar el mazo principal para mostrar las cartas restantes
-                renderDeck(cardsDisplay, deck, false); 
+                if (!cardsDisplay.classList.contains('hidden-collapsed')) { 
+                    renderDeck(cardsDisplay, deck, false);
+                }
+                renderCommunityCards();
+                hideModal(selectCommunityCardsModal);
 
-                renderCommunityCards(); /* Renderiza las cartas comunitarias en la mesa */
-                selectCommunityCardsModal.classList.add('hidden');
-
-                // Determinar el siguiente paso basado en la ronda actual
-                if (currentRound === 'pre-flop') { /* Se acaba de seleccionar el Flop */
-                    currentRound = 'flop'; /* Cambia la ronda a 'flop' */
-                    // Después de seleccionar el Flop, el siguiente paso es que el jugador seleccione sus cartas
-                    strategyAdvice.textContent = 'Flop repartido. Ahora selecciona tus 2 cartas iniciales.';
-                    showMessage('Flop Seleccionado', 'Ahora, por favor, selecciona tus 2 cartas iniciales.');
-                    showSelectHoleCardsModal(); /* Siguiente: seleccionar cartas de mano */
-                } else if (currentRound === 'flop') { /* Se acaba de seleccionar el Turn */
+                if (currentRound === 'pre-flop') { 
+                    currentRound = 'flop';
+                    // strategyAdvice.textContent = 'Flop en mesa. Selecciona tus 2 cartas.';
+                    showMessage('Flop Seleccionado', 'Ahora selecciona tus 2 cartas iniciales.');
+                    showSelectHoleCardsModal();
+                } else if (currentRound === 'flop') { 
                     currentRound = 'turn';
-                    isPlayerTurnToAct = true; /* Es el turno del jugador para actuar */
-                    strategyAdvice.textContent = 'Turn repartido. ¡Es tu turno de apostar!';
-                    showMessage('Turn Seleccionado', 'Turn repartido. ¡Es tu turno de apostar!');
-                    giveStrategyAdvice(); /* Dar consejo después del Turn */
-                } else if (currentRound === 'turn') { /* Se acaba de seleccionar el River */
+                    isPlayerTurnToAct = true;
+                    // strategyAdvice.textContent = 'Turn en mesa. ¡Tu turno de apostar!';
+                    showMessage('Turn Seleccionado', '¡Apostar!');
+                } else if (currentRound === 'turn') { 
                     currentRound = 'river';
-                    isPlayerTurnToAct = true; /* Es el turno del jugador para actuar */
-                    strategyAdvice.textContent = 'River repartido. ¡Última ronda de apuestas!';
-                    showMessage('River Seleccionado', 'River repartido. ¡Última ronda de apuestas!');
-                    giveStrategyAdvice(); /* Dar consejo después del River */
+                    isPlayerTurnToAct = true;
+                    // strategyAdvice.textContent = 'River en mesa. ¡Última ronda de apuestas!';
+                    showMessage('River Seleccionado', '¡Últimas apuestas!');
+                }
+                
+                // Si es el River y ya no es turno del jugador (porque no hay apuestas simuladas después de la selección)
+                if (currentRound === 'river' && communityCards.length === 5 && playerHand.length === 2 && !isPlayerTurnToAct) {
+                     const bestHandDetails = evaluateBestHand(playerHand, communityCards);
+                     giveStrategyAdvice(bestHandDetails.name);
+                } else {
+                    giveStrategyAdvice();
                 }
                 updateControlButtons();
-            } else {
-                showMessage('Selección Incompleta', `Por favor, selecciona exactamente ${cardsToSelectForCommunity} cartas.`);
-            }
+
+            } else { showMessage('Error', `Selecciona ${cardsToSelectForCommunity} cartas.`); }
         });
 
-        // Lógica para los botones de acción (Fold, Call, Raise)
-        // Después de que el jugador realiza una acción, se deshabilita la acción y se habilita el siguiente paso de repartir
-        foldBtn.addEventListener('click', () => {
-            showMessage('Acción Registrada', 'Te has retirado de la mano.');
-            isPlayerTurnToAct = false;
-            updateControlButtons();
-            strategyAdvice.textContent = 'Te has retirado. Reinicia el juego o espera una nueva mano.';
+        foldBtn.addEventListener('click', () => { 
+            showMessage('Acción', 'Te has retirado (Fold).'); 
+            finalizeRoundActions();
+        });
+        callBtn.addEventListener('click', () => { 
+            showMessage('Acción', 'Has igualado (Call).'); 
+            finalizeRoundActions();
+        });
+        raiseBtn.addEventListener('click', () => { 
+            showMessage('Acción', 'Has subido (Raise).'); 
+            finalizeRoundActions();
         });
 
-        callBtn.addEventListener('click', () => {
-            showMessage('Acción Registrada', 'Has igualado la apuesta.');
-            isPlayerTurnToAct = false;
-            updateControlButtons();
-            // Lógica para pasar al siguiente jugador o repartir la siguiente carta
-            if (currentRound === 'flop') {
-                strategyAdvice.textContent = 'Has igualado. Ahora puedes repartir el Turn.';
-            } else if (currentRound === 'turn') {
-                strategyAdvice.textContent = 'Has igualado. Ahora puedes repartir el River.';
-            } else if (currentRound === 'river') {
-                strategyAdvice.textContent = 'Has igualado. Es hora del Showdown.';
-            } else { 
-                strategyAdvice.textContent = 'Has igualado. Esperando la siguiente acción.';
-            }
-        });
-
-        raiseBtn.addEventListener('click', () => {
-            showMessage('Acción Registrada', 'Has subido la apuesta. (La lógica de subida y seguimiento de apuestas se implementará en futuras versiones).');
-            isPlayerTurnToAct = false;
-            updateControlButtons();
-            // Lógica para pasar al siguiente jugador o repartir la siguiente carta
-            if (currentRound === 'flop') {
-                strategyAdvice.textContent = 'Has subido. Ahora puedes repartir el Turn.';
-            } else if (currentRound === 'turn') {
-                strategyAdvice.textContent = 'Has subido. Ahora puedes repartir el River.';
-            } else if (currentRound === 'river') {
-                strategyAdvice.textContent = 'Has subido. Es hora del Showdown.';
-            } else { 
-                strategyAdvice.textContent = 'Has subido. Esperando la siguiente acción.';
-            }
-        });
-
-        // --- Lógica del Efecto Matrix para las pantallas de inicio y carga ---
-        const matrixCanvas = document.getElementById('matrixCanvas');
-        const ctx = matrixCanvas.getContext('2d');
-        let matrixInterval;
-
-        const loadingMatrixCanvas = document.getElementById('loadingMatrixCanvas');
-        const loadingCtx = loadingMatrixCanvas.getContext('2d');
-        let loadingMatrixInterval;
-
-        /**
-         * Configura el canvas para el efecto Matrix (dimensiones y array de gotas).
-         * @param {HTMLCanvasElement} canvas - El elemento canvas a configurar.
-         * @param {Array} dropsArray - El array de drops específico para este canvas.
-         */
-        function setupMatrixCanvas(canvas, dropsArray) {
+        // --- Lógica del Efecto Matrix ---
+        function setupSpecificMatrixCanvas(canvas, dropsArray) {
+            if (!canvas) return;
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
-            const newColumns = canvas.width / fontSize;
-            dropsArray.length = 0; /* Limpiar el array existente */
-            for (let x = 0; x < newColumns; x++) {
-                dropsArray[x] = 1; /* Inicializa la posición Y de cada gota */
-            }
+            const newColumns = canvas.width / matrixFontSize;
+            dropsArray.length = 0;
+            for (let x = 0; x < newColumns; x++) dropsArray[x] = 1;
         }
 
-        /**
-         * Dibuja el efecto Matrix en el canvas.
-         * @param {HTMLCanvasElement} canvas - El elemento canvas donde dibujar.
-         * @param {CanvasRenderingContext2D} context - El contexto 2D del canvas.
-         * @param {Array} dropsArray - El array de drops específico para este canvas.
-         */
-        function drawMatrix(canvas, context, dropsArray) {
-            context.fillStyle = "rgba(0, 0, 0, 0.04)"; /* Fondo oscuro con transparencia para el rastro de los caracteres */
+        function drawSpecificMatrix(canvas, context, dropsArray) {
+            if (!canvas || !context) return;
+            context.fillStyle = "rgba(0, 0, 0, 0.04)";
             context.fillRect(0, 0, canvas.width, canvas.height);
-
-            context.fillStyle = "#0F0"; /* Color verde para los números */
-            context.font = fontSize + "px arial"; /* Define la fuente y tamaño */
-
+            context.fillStyle = "#0F0";
+            context.font = matrixFontSize + "px arial";
             for (let i = 0; i < dropsArray.length; i++) {
-                const text = matrix[Math.floor(Math.random() * matrix.length)]; /* Selecciona un carácter aleatorio */
-                context.fillText(text, i * fontSize, dropsArray[i] * fontSize); /* Dibuja el carácter */
-
-                // Si la gota ha llegado al final de la pantalla o un punto aleatorio, reiníciala arriba
-                if (dropsArray[i] * fontSize > canvas.height && Math.random() > 0.975) {
-                    dropsArray[i] = 0;
-                }
-                dropsArray[i]++; /* Mueve la gota hacia abajo */
+                const text = matrixFontChars[Math.floor(Math.random() * matrixFontChars.length)];
+                context.fillText(text, i * matrixFontSize, dropsArray[i] * matrixFontSize);
+                if (dropsArray[i] * matrixFontSize > canvas.height && Math.random() > 0.975) dropsArray[i] = 0;
+                dropsArray[i]++;
             }
         }
         
-        /** Inicia la animación Matrix en la pantalla de inicio. */
-        function startMatrixAnimation() {
-            matrixCanvas.classList.remove('hidden');
-            setupMatrixCanvas(matrixCanvas, splashDrops); /* Configura el canvas de la splash screen */
-            if (matrixInterval) clearInterval(matrixInterval); /* Limpia cualquier intervalo previo */
-            matrixInterval = setInterval(() => drawMatrix(matrixCanvas, ctx, splashDrops), 33); /* Inicia el bucle de dibujo */
+        function startSplashMatrixAnimation() {
+            if (!matrixCanvas) return;
+            const ctx = matrixCanvas.getContext('2d');
+            setupSpecificMatrixCanvas(matrixCanvas, splashDrops);
+            if (matrixInterval) clearInterval(matrixInterval);
+            matrixInterval = setInterval(() => drawSpecificMatrix(matrixCanvas, ctx, splashDrops), 33);
         }
 
-        /** Detiene la animación Matrix en la pantalla de inicio. */
-        function stopMatrixAnimation() {
-            clearInterval(matrixInterval);
-            matrixCanvas.classList.add('hidden');
-        }
+        function stopSplashMatrixAnimation() { clearInterval(matrixInterval); }
 
-        /** Inicia la animación Matrix en la pantalla de carga. */
         function startLoadingMatrixAnimation() {
-            loadingMatrixCanvas.classList.remove('hidden');
-            setupMatrixCanvas(loadingMatrixCanvas, loadingDrops); /* Configura el canvas de la pantalla de carga */
-            if (loadingMatrixInterval) clearInterval(loadingMatrixInterval); /* Limpia cualquier intervalo previo */
-            loadingMatrixInterval = setInterval(() => drawMatrix(loadingMatrixCanvas, loadingCtx, loadingDrops), 33); /* Inicia el bucle de dibujo */
+            if (!loadingMatrixCanvas) return;
+            const loadingCtx = loadingMatrixCanvas.getContext('2d');
+            setupSpecificMatrixCanvas(loadingMatrixCanvas, loadingDrops);
+            if (loadingMatrixInterval) clearInterval(loadingMatrixInterval);
+            loadingMatrixInterval = setInterval(() => drawSpecificMatrix(loadingMatrixCanvas, loadingCtx, loadingDrops), 33);
         }
 
-        /** Detiene la animación Matrix en la pantalla de carga. */
-        function stopLoadingMatrixAnimation() {
-            clearInterval(loadingMatrixInterval);
-            loadingMatrixCanvas.classList.add('hidden');
-        }
+        function stopLoadingMatrixAnimation() { clearInterval(loadingMatrixInterval); }
 
-        // --- Eventos de la Pantalla de Inicio ---
-        startGameSplashBtn.addEventListener('click', () => {
-            stopMatrixAnimation(); /* Detiene la animación de la matriz de la splash screen */
-            startGame(); /* Inicia el juego principal (con su propia animación de barajado y carga) */
-        });
-
-        // Muestra el modal "Sobre Nosotros" al hacer clic en el botón de información de la splash screen
-        infoSplashBtn.addEventListener('click', () => {
-            aboutModal.classList.remove('hidden'); 
-        });
-
-        // Cierra el modal "Sobre Nosotros" y regresa a la splash screen
-        closeAboutModalBtn.addEventListener('click', () => {
-            aboutModal.classList.add('hidden'); 
-        });
-
-        // Asegurarse de que la animación de la matriz se ajuste al redimensionar la ventana
         window.addEventListener('resize', () => {
-            if (!splashScreen.classList.contains('hidden')) {
-                setupMatrixCanvas(matrixCanvas, splashDrops); /* Reconfigura el canvas de la splash screen */
-            }
-            if (!loadingScreen.classList.contains('hidden')) {
-                setupMatrixCanvas(loadingMatrixCanvas, loadingDrops); /* Reconfigura el canvas de la pantalla de carga */
-            }
+            if (splashScreen && !splashScreen.classList.contains('hidden')) startSplashMatrixAnimation();
+            if (loadingScreen && !loadingScreen.classList.contains('hidden')) startLoadingMatrixAnimation();
         });
 
-        // Inicializa la aplicación al cargar completamente el DOM
+        // Inicialización de la aplicación
         document.addEventListener('DOMContentLoaded', () => {
-            startMatrixAnimation(); /* Inicia la animación Matrix en la pantalla de inicio */
-            appContainer.classList.add('hidden'); /* Asegura que el juego esté oculto al inicio */
-            loadingScreen.classList.add('hidden'); /* Asegura que la pantalla de carga esté oculta */
-            splashScreen.classList.remove('hidden'); /* Muestra la pantalla de inicio */
-            updateControlButtons(); /* Inicializa el estado de los botones de control */
+            if(appContainer) appContainer.classList.add('hidden');
+            if(loadingScreen) loadingScreen.classList.add('hidden');
+            if(splashScreen) showModal(splashScreen); 
+            startSplashMatrixAnimation(); 
+            updateControlButtons();
         });
     </script>
 </body>
