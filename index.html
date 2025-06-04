@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Poker Hack - Tu Asistente de Estrategia v1.4</title>
+    <title>Poker Hack - Tu Asistente de Estrategia v1.5</title>
     <!-- Incluye Tailwind CSS para estilos de utilidad -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Incluye Animate.css para animaciones predefinidas -->
@@ -14,32 +14,41 @@
             font-family: 'Inter', sans-serif; /* Fuente Inter para una apariencia moderna */
             margin: 0;
             padding: 0;
-            overflow: hidden; /* Evita barras de desplazamiento no deseadas */
-            min-height: 100vh; /* Asegura que la aplicación ocupe al menos toda la altura de la ventana */
-            -webkit-tap-highlight-color: transparent; /* Mejora experiencia táctil */
+            overflow: hidden; /* Evita barras de desplazamiento no deseadas en el body */
+            min-height: 100vh; 
+            -webkit-tap-highlight-color: transparent; 
         }
 
         .touch-optimized {
-            touch-action: manipulation; /* Mejora respuesta táctil en botones */
+            touch-action: manipulation; 
         }
 
         /* Contenedor principal de la aplicación de juego */
         .app-container {
             position: relative;
-            width: 100vw; /* Ocupa todo el ancho de la ventana */
-            height: 100vh; /* Ocupa toda la altura de la ventana */
+            width: 100vw; 
+            height: 100vh; 
             display: flex;
             flex-direction: column;
-            justify-content: space-between; /* Asegura que el footer (controles) quede abajo */
+            justify-content: space-between; 
             align-items: center;
-            background-image: url('https://github.com/YanYuary/POCKERHACK/blob/main/MESA%20POCKER.png?raw=true'); /* Fondo de mesa de póker */
-            background-size: cover; /* Cubre todo el contenedor */
-            background-position: center; /* Centra la imagen de fondo */
-            background-repeat: no-repeat; /* Evita la repetición de la imagen */
-            color: #e2e8f0; /* Color de texto claro para contraste */
+            background-image: url('https://github.com/YanYuary/POCKERHACK/blob/main/MESA%20POCKER.png?raw=true'); 
+            background-size: cover; 
+            background-position: center; 
+            background-repeat: no-repeat; 
+            color: #e2e8f0; 
             padding: 0; 
             box-sizing: border-box; 
         }
+        /* Asegurar que el área principal pueda encogerse y mostrar el scroll si es necesario */
+        .app-container > main {
+            flex-grow: 1; /* Permite que el main crezca */
+            flex-shrink: 1; /* Permite que el main se encoja */
+            min-height: 0; /* Crucial para que el overflow funcione en un contenedor flex hijo */
+            overflow-y: auto; /* Scroll solo si el contenido del main excede su espacio */
+            width: 100%; /* Ocupa todo el ancho disponible */
+        }
+
 
         /* Estilos para las cartas individuales */
         .card {
@@ -128,7 +137,7 @@
             cursor: not-allowed;
             box-shadow: none;
         }
-        #infoBtnGame {
+        #infoBtnGame { /* Botón de info DENTRO del juego */
             position: absolute;
             top: 1rem;
             right: 1rem;
@@ -166,7 +175,7 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            z-index: 2000;
+            z-index: 2000; /* Z-index alto para la pantalla de inicio */
             overflow: hidden;
         }
         .splash-screen-custom canvas { 
@@ -175,14 +184,20 @@
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: -1;
+            z-index: -1; /* Canvas de Matrix detrás del contenido de splash */
         }
         .splash-screen-custom .logo-main { 
             width: 350px;
             height: auto;
-            margin-bottom: 3rem;
+            margin-bottom: 2rem; 
         }
-        .splash-screen-custom .splash-buttons-custom button { 
+        .splash-buttons-custom { 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5rem; 
+        }
+        .splash-buttons-custom button { 
             background-size: contain;
             background-repeat: no-repeat;
             background-position: center;
@@ -192,13 +207,13 @@
             cursor: pointer;
             transition: transform 0.2s ease-in-out;
         }
-        .splash-screen-custom .splash-buttons-custom button:hover {
+        .splash-buttons-custom button:hover {
             transform: scale(1.05);
         }
         #startGameSplashBtn {
             background-image: url('https://github.com/YanYuary/POCKERHACK/blob/main/BOTON_INICIAR.png?raw=true');
         }
-        #infoSplashBtn {
+        #infoSplashBtn { 
             background-image: url('https://github.com/YanYuary/POCKERHACK/blob/main/BOTON_INFO.png?raw=true');
         }
 
@@ -214,7 +229,7 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            z-index: 1500;
+            z-index: 1500; /* Z-index para la pantalla de carga */
             color: #00ff00;
             font-size: 1.5rem;
         }
@@ -287,43 +302,41 @@
             overflow: hidden;
         }
         
-        /* Estilos para Modales - Cambio a gris sutil */
+        /* Estilos para Modales - gris sutil */
         .modal-content-area {
-            background-color: #f3f4f6; /* Gris sutil (Tailwind gray-100) */
-            color: #1f2937; /* Texto oscuro (Tailwind gray-800) */
-            border-radius: 0.5rem; /* Tailwind rounded-lg */
-            padding: 1.5rem; /* Tailwind p-6 */
-            width: 91.666667%; /* Tailwind w-11/12 */
-            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04); /* Tailwind shadow-2xl */
-            border: 1px solid #d1d5db; /* Tailwind border-gray-300 */
+            background-color: #f3f4f6; 
+            color: #1f2937; 
+            border-radius: 0.5rem; 
+            padding: 1.5rem; 
+            width: 91.666667%; 
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04); 
+            border: 1px solid #d1d5db; 
         }
-        .modal-content-area h2 { /* Títulos de modales */
-            color: #059669; /* Verde oscuro (Tailwind green-600) */
+        .modal-content-area h2 { 
+            color: #059669; 
             font-weight: bold;
-            margin-bottom: 1rem; /* Tailwind mb-4 */
+            margin-bottom: 1rem; 
         }
         .modal-content-area label {
-            color: #4b5563; /* Gris medio (Tailwind gray-600) */
+            color: #4b5563; 
         }
         .modal-content-area input[type="number"],
-        .modal-content-area input[type="text"] { /* Estilo para inputs en modales */
-            background-color: #ffffff; /* Fondo blanco */
-            border: 1px solid #d1d5db; /* Borde gris (Tailwind border-gray-300) */
-            color: #111827; /* Texto muy oscuro (Tailwind gray-900) */
-            border-radius: 0.375rem; /* Tailwind rounded-md */
+        .modal-content-area input[type="text"] { 
+            background-color: #ffffff; 
+            border: 1px solid #d1d5db; 
+            color: #111827; 
+            border-radius: 0.375rem; 
         }
         .modal-content-area input[type="number"]:focus,
         .modal-content-area input[type="text"]:focus {
-             border-color: #10b981; /* Borde verde al enfocar (Tailwind green-500) */
-             box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.3); /* Anillo de enfoque verde */
+             border-color: #10b981; 
+             box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.3); 
         }
-        /* Contenedor de cartas en modales */
         .modal-deck-cards-container {
-            background-color: #e5e7eb; /* Gris un poco más oscuro (Tailwind gray-200) */
-            border: 1px solid #d1d5db; /* Tailwind border-gray-300 */
-            border-radius: 0.375rem; /* Tailwind rounded-md */
+            background-color: #e5e7eb; 
+            border: 1px solid #d1d5db; 
+            border-radius: 0.375rem; 
         }
-
 
         /* Ajustes responsivos */
         @media (max-width: 640px) {
@@ -336,9 +349,17 @@
                 height: 90px;
             }
             .game-controls-custom button {
-                min-width: 90px;
-                height: 60px;
+                min-width: 80px; 
+                height: 60px; 
+                font-size: 0.75rem; 
             }
+             .game-controls-custom { 
+                padding: 0.5rem; 
+            }
+            .game-controls-custom .grid { 
+                gap: 0.25rem; 
+            }
+
             #infoBtnGame {
                 width: 50px;
                 height: 50px;
@@ -346,17 +367,24 @@
                 right: 0.5rem;
             }
             .splash-screen-custom .logo-main {
-                width: 280px; 
+                width: 250px; 
+                margin-bottom: 1.5rem;
             }
-            .splash-screen-custom .splash-buttons-custom button {
-                width: 240px;
-                height: 72px;
+            .splash-buttons-custom button { 
+                width: 220px;
+                height: 70px;
             }
-            .modal-content-area { /* Ajustar padding en móviles */
+            .splash-buttons-custom {
+                 gap: 1rem; 
+            }
+            .modal-content-area { 
                 padding: 1rem;
             }
             .modal-content-area h2 {
-                font-size: 1.125rem; /* Tailwind text-lg */
+                font-size: 1.125rem; 
+            }
+            .app-container > main {
+                padding-bottom: 1rem; 
             }
         }
     </style>
@@ -366,7 +394,7 @@
     <div id="splashScreen" class="splash-screen-custom">
         <canvas id="matrixCanvas"></canvas> 
         <img src="https://github.com/YanYuary/POCKERHACK/blob/main/LOGO2.png?raw=true" alt="[Logo de Poker Hack]" class="logo-main animate__animated animate__pulse animate__infinite">
-        <div class="splash-buttons-custom flex flex-col space-y-6"> 
+        <div class="splash-buttons-custom"> 
             <button id="startGameSplashBtn" class="touch-optimized"></button>
             <button id="infoSplashBtn" class="touch-optimized"></button>
         </div>
@@ -386,13 +414,13 @@
         <button id="infoBtnGame" class="touch-optimized"></button> 
 
         <!-- Encabezado -->
-        <header class="relative z-10 bg-black bg-opacity-75 p-3 md:p-4 shadow-lg flex items-center justify-center w-full box-border" style="box-shadow: 0 0 15px rgba(0, 255, 0, 0.5);">
+        <header class="relative z-10 bg-black bg-opacity-75 p-3 md:p-4 shadow-lg flex items-center justify-center w-full box-border flex-shrink-0" style="box-shadow: 0 0 15px rgba(0, 255, 0, 0.5);">
             <img src="https://github.com/YanYuary/POCKERHACK/blob/main/LOGO2.png?raw=true" alt="[Logo de Poker Hack]" class="h-8 md:h-10 mr-2 md:mr-3">
-            <h1 class="text-xl md:text-2xl font-bold text-green-400">POKER HACK <span class="text-sm md:text-base text-gray-300">v1.4</span></h1>
+            <h1 class="text-xl md:text-2xl font-bold text-green-400">POKER HACK <span class="text-sm md:text-base text-gray-300">v1.5</span></h1>
         </header>
 
         <!-- Área de juego principal -->
-        <main class="flex-1 flex flex-col items-center justify-center p-2 md:p-4 z-10 relative w-full overflow-y-auto">
+        <main class="flex-1 flex flex-col items-center justify-center p-2 md:p-4 z-10 relative w-full">
             <!-- Cartas comunitarias -->
             <div class="bg-black bg-opacity-60 rounded-lg p-3 mb-3 shadow-md w-full max-w-2xl">
                 <h3 class="text-sm font-semibold text-gray-300 mb-2 text-center">Cartas de la Mesa</h3>
@@ -421,7 +449,7 @@
         </main>
 
         <!-- Controles del juego -->
-        <footer class="p-2 md:p-4 bg-black bg-opacity-75 shadow-lg z-10 w-full box-border game-controls-custom">
+        <footer class="p-2 md:p-4 bg-black bg-opacity-75 shadow-lg z-10 w-full box-border game-controls-custom flex-shrink-0">
             <div class="grid grid-cols-3 gap-2 mb-2">
                 <button id="dealTurnBtn" class="touch-optimized" disabled></button>
                 <button id="dealRiverBtn" class="touch-optimized" disabled></button>
@@ -438,7 +466,7 @@
     <!-- Modales con nuevo estilo gris sutil -->
     <!-- Modal Configuración -->
     <div id="setupModal" class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50 hidden animate__animated animate__faster">
-        <div class="modal-content-area max-w-md"> <!-- Clase para estilo de contenido del modal -->
+        <div class="modal-content-area max-w-md"> 
             <h2 class="text-xl md:text-2xl">Configuración del Juego</h2>
             <div class="space-y-4">
                 <div>
@@ -507,107 +535,107 @@
     <div id="infoModal" class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50 hidden overflow-y-auto animate__animated animate__faster">
         <div class="modal-content-area max-w-2xl my-6 max-h-[90vh] overflow-y-auto">
             <h2 class="text-2xl">Información y Estrategias de Póker</h2>
-            <div class="space-y-6 text-gray-700"> <!-- Texto del contenido del modal a gris oscuro -->
+            <div class="space-y-6 text-gray-700"> 
                 <div>
-                    <h3 class="text-xl font-semibold text-green-700 mb-2">Jerarquía de Manos</h3> <!-- Título de sección a verde más oscuro -->
+                    <h3 class="text-xl font-semibold text-green-700 mb-2">Jerarquía de Manos</h3> 
                     <ol class="space-y-3 text-sm">
-                        <li class="bg-gray-200 p-3 rounded-lg"> <!-- Fondo de item de lista a gris más claro -->
+                        <li class="bg-gray-200 p-3 rounded-lg"> 
                             <div class="flex items-center space-x-1 mb-1 overflow-x-auto pb-1">
-                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/TH.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm">
-                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/JH.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm">
-                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/QH.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm">
-                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/KH.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm">
-                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/AH.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm">
+                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/TH.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm" alt="[Diez de Corazones]">
+                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/JH.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm" alt="[Jota de Corazones]">
+                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/QH.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm" alt="[Reina de Corazones]">
+                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/KH.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm" alt="[Rey de Corazones]">
+                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/AH.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm" alt="[As de Corazones]">
                             </div>
                             <strong>Escalera Real de Color (Royal Flush)</strong>: Diez, Jota, Reina, Rey, As del mismo palo.
                         </li>
                          <li class="bg-gray-200 p-3 rounded-lg">
                             <div class="flex items-center space-x-1 mb-1 overflow-x-auto pb-1">
-                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/5S.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm">
-                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/6S.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm">
-                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/7S.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm">
-                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/8S.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm">
-                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/9S.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm">
+                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/5S.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm" alt="[Cinco de Picas]">
+                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/6S.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm" alt="[Seis de Picas]">
+                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/7S.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm" alt="[Siete de Picas]">
+                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/8S.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm" alt="[Ocho de Picas]">
+                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/9S.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm" alt="[Nueve de Picas]">
                             </div>
                             <strong>Escalera de Color (Straight Flush)</strong>: Cinco cartas consecutivas del mismo palo.
                         </li>
                         <li class="bg-gray-200 p-3 rounded-lg">
                             <div class="flex items-center space-x-1 mb-1 overflow-x-auto pb-1">
-                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/AC.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm">
-                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/AD.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm">
-                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/AH.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm">
-                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/AS.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm">
-                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/2C.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm">
+                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/AC.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm" alt="[As de Tréboles]">
+                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/AD.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm" alt="[As de Diamantes]">
+                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/AH.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm" alt="[As de Corazones]">
+                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/AS.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm" alt="[As de Picas]">
+                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/2C.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm" alt="[Dos de Tréboles]">
                             </div>
                             <strong>Póker (Four of a Kind)</strong>: Cuatro cartas del mismo rango.
                         </li>
                         <li class="bg-gray-200 p-3 rounded-lg">
                             <div class="flex items-center space-x-1 mb-1 overflow-x-auto pb-1">
-                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/KC.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm">
-                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/KD.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm">
-                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/KH.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm">
-                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/QC.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm">
-                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/QS.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm">
+                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/KC.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm" alt="[Rey de Tréboles]">
+                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/KD.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm" alt="[Rey de Diamantes]">
+                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/KH.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm" alt="[Rey de Corazones]">
+                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/QC.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm" alt="[Reina de Tréboles]">
+                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/QS.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm" alt="[Reina de Picas]">
                             </div>
                             <strong>Full (Full House)</strong>: Tres cartas de un rango y dos cartas de otro rango.
                         </li>
                         <li class="bg-gray-200 p-3 rounded-lg">
                             <div class="flex items-center space-x-1 mb-1 overflow-x-auto pb-1">
-                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/2H.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm">
-                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/5H.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm">
-                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/9H.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm">
-                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/JH.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm">
-                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/AH.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm">
+                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/2H.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm" alt="[Dos de Corazones]">
+                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/5H.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm" alt="[Cinco de Corazones]">
+                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/9H.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm" alt="[Nueve de Corazones]">
+                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/JH.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm" alt="[Jota de Corazones]">
+                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/AH.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm" alt="[As de Corazones]">
                             </div>
                             <strong>Color (Flush)</strong>: Cinco cartas del mismo palo, no consecutivas.
                         </li>
                         <li class="bg-gray-200 p-3 rounded-lg">
                             <div class="flex items-center space-x-1 mb-1 overflow-x-auto pb-1">
-                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/7C.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm">
-                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/8D.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm">
-                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/9H.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm">
-                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/TS.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm">
-                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/JC.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm">
+                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/7C.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm" alt="[Siete de Tréboles]">
+                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/8D.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm" alt="[Ocho de Diamantes]">
+                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/9H.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm" alt="[Nueve de Corazones]">
+                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/TS.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm" alt="[Diez de Picas]">
+                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/JC.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm" alt="[Jota de Tréboles]">
                             </div>
                             <strong>Escalera (Straight)</strong>: Cinco cartas consecutivas de palos diferentes.
                         </li>
                         <li class="bg-gray-200 p-3 rounded-lg">
                             <div class="flex items-center space-x-1 mb-1 overflow-x-auto pb-1">
-                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/QC.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm">
-                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/QD.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm">
-                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/QH.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm">
-                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/2S.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm">
-                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/5C.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm">
+                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/QC.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm" alt="[Reina de Tréboles]">
+                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/QD.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm" alt="[Reina de Diamantes]">
+                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/QH.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm" alt="[Reina de Corazones]">
+                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/2S.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm" alt="[Dos de Picas]">
+                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/5C.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm" alt="[Cinco de Tréboles]">
                             </div>
                             <strong>Trío (Three of a Kind)</strong>: Tres cartas del mismo rango.
                         </li>
                         <li class="bg-gray-200 p-3 rounded-lg">
                             <div class="flex items-center space-x-1 mb-1 overflow-x-auto pb-1">
-                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/8C.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm">
-                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/8D.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm">
-                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/4H.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm">
-                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/4S.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm">
-                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/KC.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm">
+                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/8C.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm" alt="[Ocho de Tréboles]">
+                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/8D.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm" alt="[Ocho de Diamantes]">
+                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/4H.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm" alt="[Cuatro de Corazones]">
+                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/4S.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm" alt="[Cuatro de Picas]">
+                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/KC.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm" alt="[Rey de Tréboles]">
                             </div>
                             <strong>Doble Pareja (Two Pair)</strong>: Dos cartas de un rango y dos cartas de otro rango.
                         </li>
                         <li class="bg-gray-200 p-3 rounded-lg">
                             <div class="flex items-center space-x-1 mb-1 overflow-x-auto pb-1">
-                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/7C.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm">
-                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/7D.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm">
-                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/2H.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm">
-                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/5S.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm">
-                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/QC.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm">
+                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/7C.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm" alt="[Siete de Tréboles]">
+                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/7D.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm" alt="[Siete de Diamantes]">
+                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/2H.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm" alt="[Dos de Corazones]">
+                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/5S.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm" alt="[Cinco de Picas]">
+                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/QC.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm" alt="[Reina de Tréboles]">
                             </div>
                             <strong>Pareja (One Pair)</strong>: Dos cartas del mismo rango.
                         </li>
                         <li class="bg-gray-200 p-3 rounded-lg">
                             <div class="flex items-center space-x-1 mb-1 overflow-x-auto pb-1">
-                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/AC.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm">
-                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/5D.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm">
-                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/8H.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm">
-                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/KS.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm">
-                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/2C.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm">
+                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/AC.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm" alt="[As de Tréboles]">
+                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/5D.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm" alt="[Cinco de Diamantes]">
+                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/8H.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm" alt="[Ocho de Corazones]">
+                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/KS.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm" alt="[Rey de Picas]">
+                                <img src="https://raw.githubusercontent.com/richardschneider/cardsJS/master/cards/2C.svg" class="w-10 h-14 sm:w-12 sm:h-18 flex-shrink-0 rounded-sm" alt="[Dos de Tréboles]">
                             </div>
                             <strong>Carta Alta (High Card)</strong>: Ninguna de las combinaciones anteriores.
                         </li>
@@ -657,7 +685,8 @@
     </div>
 
     <!-- Modal "Sobre Nosotros" -->
-    <div id="aboutModal" class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50 hidden overflow-y-auto animate__animated animate__faster">
+    <!-- Z-INDEX AJUSTADO AQUÍ para que aparezca sobre la pantalla de inicio -->
+    <div id="aboutModal" class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-[2001] hidden overflow-y-auto animate__animated animate__faster">
         <div class="modal-content-area max-w-xl my-6 max-h-[90vh] overflow-y-auto">
             <h2 class="text-2xl">Sobre Poker Hack</h2>
             <div class="space-y-4 text-gray-700 text-sm">
@@ -687,20 +716,19 @@
 
         // Mapeo y constantes de cartas
         const rankMap = { 'A': 'A', '2': '2', '3': '3', '4': '4', '5': '5', '6': '6', '7': '7', '8': '8', '9': '9', '10': 'T', 'J': 'J', 'Q': 'Q', 'K': 'K' };
-        const suitMap = { 'H': 'H', 'D': 'D', 'C': 'C', 'S': 'S' }; // Corazones, Diamantes, Tréboles, Picas
+        const suitMap = { 'H': 'H', 'D': 'D', 'C': 'C', 'S': 'S' }; 
         const suits = ['H', 'D', 'C', 'S']; 
         const ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
         const rankOrder = { '2':2, '3':3, '4':4, '5':5, '6':6, '7':7, '8':8, '9':9, '10':10, 'J':11, 'Q':12, 'K':13, 'A':14 };
 
-
         // Estado del juego
         let deck = [];
-        let playerHand = []; // Tus 2 cartas
-        let communityCards = []; // Cartas en la mesa (Flop, Turn, River)
-        let numPlayers = 4; // Número de jugadores en la mesa
-        let playerTurnIndex = 0; // Tu posición en la mesa (0-indexed)
-        let currentRound = 'pre-flop'; // Ronda actual: pre-flop, flop, turn, river
-        let isPlayerTurnToAct = false; // Indica si es tu turno de apostar/actuar
+        let playerHand = []; 
+        let communityCards = []; 
+        let numPlayers = 4; 
+        let playerTurnIndex = 0; 
+        let currentRound = 'pre-flop'; 
+        let isPlayerTurnToAct = false; 
 
         // Selección temporal en modales
         let tempSelectedHoleCards = [];
@@ -728,7 +756,7 @@
         const foldBtn = document.getElementById('foldBtn');
         const callBtn = document.getElementById('callBtn');
         const raiseBtn = document.getElementById('raiseBtn');
-        const infoBtnGame = document.getElementById('infoBtnGame');
+        const infoBtnGame = document.getElementById('infoBtnGame'); // Botón de info en el juego
 
         const setupModal = document.getElementById('setupModal');
         const numPlayersInput = document.getElementById('numPlayers');
@@ -757,13 +785,13 @@
         const closeAboutModalBtn = document.getElementById('closeAboutModalBtn');
 
         const startGameSplashBtn = document.getElementById('startGameSplashBtn');
-        const infoSplashBtn = document.getElementById('infoSplashBtn');
+        const infoSplashBtn = document.getElementById('infoSplashBtn'); // Botón de info en splash
 
         // --- Funciones de Utilidad y Juego ---
         function getCardImageUrl(suitCode, rankCode) { 
             const rankChar = rankMap[rankCode];
             const suitChar = suitMap[suitCode];
-            if (!rankChar || !suitChar) { // Fallback por si acaso
+            if (!rankChar || !suitChar) { 
                 console.error(`Invalid card for image: ${rankCode}${suitCode}`);
                 return 'https://placehold.co/60x90/CCCCCC/000000?text=Error';
             }
@@ -771,12 +799,14 @@
         }
 
         function showModal(modalElement) {
+            if (!modalElement) return;
             modalElement.classList.remove('hidden');
             modalElement.classList.remove('animate__fadeOutDown'); 
             modalElement.classList.add('animate__fadeInUp'); 
         }
 
         function hideModal(modalElement) {
+            if (!modalElement) return;
             modalElement.classList.remove('animate__fadeInUp');
             modalElement.classList.add('animate__fadeOutDown');
             setTimeout(() => {
@@ -784,9 +814,16 @@
             }, 300); 
         }
         
-        function showMessage(title, text) {
+        function showMessage(title, text, isError = false) { 
+            if (!messageModal || !messageTitle || !messageText) return;
             messageTitle.textContent = title;
             messageText.textContent = text;
+            messageTitle.classList.remove('text-red-500', 'text-green-600'); // Reset colors
+            if (isError) {
+                messageTitle.classList.add('text-red-500'); 
+            } else {
+                 messageTitle.classList.add('text-green-600'); 
+            }
             showModal(messageModal);
         }
 
@@ -797,7 +834,6 @@
                     deck.push({ rank, suit, id: `${rank}${suit}` });
                 });
             });
-            // Orden visual del mazo para selección (opcional, pero consistente con v1.3)
             deck.sort((a, b) => { 
                 const suitOrder = { 'C': 1, 'D': 2, 'H': 3, 'S': 4 };
                 if (suitOrder[a.suit] !== suitOrder[b.suit]) {
@@ -808,6 +844,7 @@
         }
         
         function renderDeck(container, cardsToRender, selectable = false, currentSelection = [], maxSelection = 0, countDisplay = null, confirmButton = null) {
+            if (!container) return;
             container.innerHTML = ''; 
             cardsToRender.forEach((cardData, index) => {
                 const cardDiv = document.createElement('div');
@@ -843,7 +880,7 @@
                     currentSelection.push(card);
                     cardDiv.classList.add('selected');
                 } else {
-                    showMessage('Límite Alcanzado', `Solo puedes seleccionar ${maxSelection} cartas.`);
+                    showMessage('Límite Alcanzado', `Solo puedes seleccionar ${maxSelection} cartas.`, true);
                     return;
                 }
             }
@@ -860,6 +897,7 @@
         }
 
         function renderPlayerHand() {
+            if (!playerHandDisplay) return;
             playerHandDisplay.innerHTML = '';
             if (playerHand.length > 0 && playerHandPlaceholder) playerHandPlaceholder.classList.add('hidden');
             else if (playerHandPlaceholder) playerHandPlaceholder.classList.remove('hidden');
@@ -877,6 +915,7 @@
         }
 
         function renderCommunityCards() {
+            if (!communityCardsDisplay) return;
             communityCardsDisplay.innerHTML = '';
              if (communityCards.length > 0 && communityPlaceholder) communityPlaceholder.classList.add('hidden');
              else if (communityPlaceholder) communityPlaceholder.classList.remove('hidden');
@@ -894,18 +933,18 @@
         }
         
         function updateControlButtons() { 
-            resetGameBtn.disabled = (playerHand.length === 0 && communityCards.length === 0 && currentRound === 'pre-flop');
-            dealTurnBtn.disabled = !(currentRound === 'flop' && communityCards.length === 3 && playerHand.length === 2 && !isPlayerTurnToAct);
-            dealRiverBtn.disabled = !(currentRound === 'turn' && communityCards.length === 4 && playerHand.length === 2 && !isPlayerTurnToAct);
-            foldBtn.disabled = !isPlayerTurnToAct;
-            callBtn.disabled = !isPlayerTurnToAct;
-            raiseBtn.disabled = !isPlayerTurnToAct;
+            if(resetGameBtn) resetGameBtn.disabled = (playerHand.length === 0 && communityCards.length === 0 && currentRound === 'pre-flop');
+            if(dealTurnBtn) dealTurnBtn.disabled = !(currentRound === 'flop' && communityCards.length === 3 && playerHand.length === 2 && !isPlayerTurnToAct);
+            if(dealRiverBtn) dealRiverBtn.disabled = !(currentRound === 'turn' && communityCards.length === 4 && playerHand.length === 2 && !isPlayerTurnToAct);
+            if(foldBtn) foldBtn.disabled = !isPlayerTurnToAct;
+            if(callBtn) callBtn.disabled = !isPlayerTurnToAct;
+            if(raiseBtn) raiseBtn.disabled = !isPlayerTurnToAct;
         }
 
         function showSelectHoleCardsModal() { 
             tempSelectedHoleCards = [];
-            selectedCardsCount.textContent = 'Cartas seleccionadas: 0/2';
-            confirmHoleCardsBtn.disabled = true;
+            if(selectedCardsCount) selectedCardsCount.textContent = 'Cartas seleccionadas: 0/2';
+            if(confirmHoleCardsBtn) confirmHoleCardsBtn.disabled = true;
             renderDeck(modalDeckDisplay, deck, true, tempSelectedHoleCards, 2, selectedCardsCount, confirmHoleCardsBtn);
             showModal(selectHoleCardsModal);
         }
@@ -914,13 +953,14 @@
             cardsToSelectForCommunity = numCards;
             tempSelectedCommunityCards = [];
             if(cardsToSelectDisplay) cardsToSelectDisplay.textContent = numCards; 
-            selectedCommunityCardsCount.textContent = `Cartas a seleccionar: 0/${numCards}`;
-            confirmCommunityCardsBtn.disabled = true;
+            if(selectedCommunityCardsCount) selectedCommunityCardsCount.textContent = `Cartas a seleccionar: 0/${numCards}`;
+            if(confirmCommunityCardsBtn) confirmCommunityCardsBtn.disabled = true;
             renderDeck(modalCommunityDeckDisplay, deck, true, tempSelectedCommunityCards, numCards, selectedCommunityCardsCount, confirmCommunityCardsBtn);
             showModal(selectCommunityCardsModal);
         }
         
         function giveStrategyAdvice(finalHandName = null) { 
+            if (!strategyAdvice) return;
             let advice = "Analiza la situación y actúa con inteligencia.";
             
             if (finalHandName) {
@@ -936,9 +976,9 @@
                     else if (['A', 'K', 'Q', 'J'].includes(card1.rank) || ['A', 'K', 'Q', 'J'].includes(card2.rank)) advice = "Cartas altas. Juega con astucia.";
                     else advice = "Mano inicial. Observa a tus oponentes.";
                 } else if (playerHand.length === 2 && communityCards.length >= 3) {
-                    const tempBestHand = evaluateBestHand(playerHand, communityCards); // Evalúa la mano actual
-                    if (tempBestHand.rankValue >= 6) advice = `¡Tienes ${tempBestHand.name}! Mano muy fuerte.`; // Flush o mejor
-                    else if (tempBestHand.rankValue >= 3) advice = `Llevas ${tempBestHand.name}. Buena mano.`; // Two Pair o mejor
+                    const tempBestHand = evaluateBestHand(playerHand, communityCards); 
+                    if (tempBestHand.rankValue >= 6) advice = `¡Tienes ${tempBestHand.name}! Mano muy fuerte.`; 
+                    else if (tempBestHand.rankValue >= 3) advice = `Llevas ${tempBestHand.name}. Buena mano.`; 
                     else advice = "Evalúa el board y las apuestas. ¿Tienes outs?";
                 }
                 strategyAdvice.innerHTML = `<p class="animate__animated animate__fadeIn"><strong>¡ES TU TURNO!</strong> Consejo: ${advice}</p>`;
@@ -953,7 +993,7 @@
         }
 
         // --- LÓGICA DE EVALUACIÓN DE MANOS ---
-        function getCombinations(arr, k) { // Genera todas las combinaciones de k elementos de un array
+        function getCombinations(arr, k) { 
             if (k === 0) return [[]];
             if (arr.length < k) return [];
             const first = arr[0];
@@ -963,9 +1003,9 @@
             return [...combsWithFirst, ...combsWithoutFirst];
         }
 
-        function evaluateHand(hand) { // Evalúa una mano de 5 cartas
-            const counts = {}; // Conteo de rangos
-            const suitsInHand = {}; // Conteo de palos
+        function evaluateHand(hand) { 
+            const counts = {}; 
+            const suitsInHand = {}; 
             hand.forEach(card => {
                 counts[card.rank] = (counts[card.rank] || 0) + 1;
                 suitsInHand[card.suit] = (suitsInHand[card.suit] || 0) + 1;
@@ -991,16 +1031,14 @@
                         break;
                     }
                 }
-                // Check for A-2-3-4-5 straight (Ace as 1)
                 if (!isStraight && uniqueNumericRanks.includes(14) && uniqueNumericRanks.includes(2) && uniqueNumericRanks.includes(3) && uniqueNumericRanks.includes(4) && uniqueNumericRanks.includes(5)) {
-                    isStraight = true;
+                    isStraight = true; // Ace-low straight (A,2,3,4,5)
                 }
             }
 
             const rankValues = Object.values(counts);
 
             if (isStraight && isFlush) {
-                // Royal Flush check (A, K, Q, J, 10 of same suit)
                 const isRoyal = numericRanks.includes(10) && numericRanks.includes(11) && numericRanks.includes(12) && numericRanks.includes(13) && numericRanks.includes(14);
                 return isRoyal ? { name: "Escalera Real de Color", rankValue: 10 } : { name: "Escalera de Color", rankValue: 9 };
             }
@@ -1016,21 +1054,23 @@
         }
 
         function evaluateBestHand(holeCards, boardCards) {
-            if (holeCards.length !== 2 || boardCards.length < 3) { // Necesita al menos el flop
+            if (holeCards.length !== 2 || boardCards.length < 3) { 
                  return { name: "Insuficientes cartas", rankValue: 0 };
             }
             const sevenCards = [...holeCards, ...boardCards];
             const fiveCardCombinations = getCombinations(sevenCards, 5);
             
-            let bestHand = { name: "Carta Alta", rankValue: 0 };
+            let bestHand = { name: "Carta Alta", rankValue: 0, highCard: 0 };
+             if (sevenCards.length > 0 && holeCards.length > 0) { 
+                bestHand.highCard = Math.max(...holeCards.map(c => rankOrder[c.rank])); 
+            }
+
             fiveCardCombinations.forEach(combo => {
                 const evaluated = evaluateHand(combo);
                 if (evaluated.rankValue > bestHand.rankValue) {
                     bestHand = evaluated;
-                } 
-                // Simple tie-breaking for high card if ranks are same (not fully implemented for all hand types)
-                else if (evaluated.rankValue === bestHand.rankValue && evaluated.rankValue === 1) { 
-                    if (evaluated.highCard > (bestHand.highCard || 0)) {
+                } else if (evaluated.rankValue === bestHand.rankValue) { 
+                    if (evaluated.rankValue === 1 && evaluated.highCard > bestHand.highCard) {
                         bestHand = evaluated;
                     }
                 }
@@ -1047,31 +1087,35 @@
             isPlayerTurnToAct = false;
             renderPlayerHand();
             renderCommunityCards();
-            strategyAdvice.textContent = 'Barajando las cartas...';
+            if(strategyAdvice) strategyAdvice.textContent = 'Barajando las cartas...';
             
             hideModal(splashScreen); 
             showModal(loadingScreen); 
             startLoadingMatrixAnimation(); 
 
             let progress = 0;
-            loadingBar.style.width = '0%';
+            if(loadingBar) loadingBar.style.width = '0%';
             const loadingInterval = setInterval(() => {
                 progress += 10; 
-                loadingBar.style.width = `${progress}%`;
+                if(loadingBar) loadingBar.style.width = `${progress}%`;
                 if (progress >= 100) {
                     clearInterval(loadingInterval);
                     setTimeout(() => {
                         hideModal(loadingScreen);
                         stopLoadingMatrixAnimation();
-                        appContainer.classList.remove('hidden');
-                        appContainer.classList.add('animate__animated', 'animate__fadeIn');
+                        if(appContainer) {
+                            appContainer.classList.remove('hidden');
+                            appContainer.classList.add('animate__animated', 'animate__fadeIn');
+                        }
                         
-                        cardsDisplay.classList.remove('hidden-collapsed');
-                        renderDeck(cardsDisplay, deck, false); 
-                        cardsDisplay.classList.add('deck-display-shuffling'); 
+                        if(cardsDisplay) {
+                            cardsDisplay.classList.remove('hidden-collapsed');
+                            renderDeck(cardsDisplay, deck, false); 
+                            cardsDisplay.classList.add('deck-display-shuffling'); 
+                        }
                         
                         setTimeout(() => {
-                            cardsDisplay.classList.remove('deck-display-shuffling');
+                            if(cardsDisplay) cardsDisplay.classList.remove('deck-display-shuffling');
                             showModal(setupModal);
                             updateControlButtons();
                             giveStrategyAdvice();
@@ -1089,25 +1133,24 @@
             isPlayerTurnToAct = false;
             renderPlayerHand();
             renderCommunityCards();
-            strategyAdvice.textContent = 'Esperando el inicio del juego...';
-            cardsDisplay.classList.add('hidden-collapsed');
+            if(strategyAdvice) strategyAdvice.textContent = 'Esperando el inicio del juego...';
+            if(cardsDisplay) cardsDisplay.classList.add('hidden-collapsed');
             updateControlButtons();
-            showMessage('Juego Reiniciado', 'Configura una nueva partida.');
             showModal(setupModal);
         }
 
         function dealTurn() { 
-            if (currentRound !== 'flop' || communityCards.length !== 3) { showMessage('Error', 'Flop debe tener 3 cartas.'); return; }
-            if (isPlayerTurnToAct) { showMessage('Acción Pendiente', 'Realiza tu apuesta antes del Turn.'); return; }
-            showMessage('Selección de Turn', 'Selecciona la carta del Turn.');
+            if (currentRound !== 'flop' || communityCards.length !== 3) { showMessage('Error', 'Flop debe tener 3 cartas.', true); return; }
+            if (isPlayerTurnToAct) { showMessage('Acción Pendiente', 'Realiza tu apuesta antes del Turn.', true); return; }
+            if(strategyAdvice) strategyAdvice.textContent = 'Selecciona la carta del Turn.';
             showSelectCommunityCardsModal(1);
             updateControlButtons();
         }
 
         function dealRiver() { 
-            if (currentRound !== 'turn' || communityCards.length !== 4) { showMessage('Error', 'Turn debe tener 4 cartas.'); return; }
-            if (isPlayerTurnToAct) { showMessage('Acción Pendiente', 'Realiza tu apuesta antes del River.'); return; }
-            showMessage('Selección de River', 'Selecciona la carta del River.');
+            if (currentRound !== 'turn' || communityCards.length !== 4) { showMessage('Error', 'Turn debe tener 4 cartas.', true); return; }
+            if (isPlayerTurnToAct) { showMessage('Acción Pendiente', 'Realiza tu apuesta antes del River.', true); return; }
+            if(strategyAdvice) strategyAdvice.textContent = 'Selecciona la carta del River.';
             showSelectCommunityCardsModal(1);
             updateControlButtons();
         }
@@ -1117,59 +1160,56 @@
             updateControlButtons();
             if (currentRound === 'river' && playerHand.length === 2 && communityCards.length === 5) {
                 const bestHandDetails = evaluateBestHand(playerHand, communityCards);
-                giveStrategyAdvice(bestHandDetails.name); // Muestra la mano final
+                giveStrategyAdvice(bestHandDetails.name); 
             } else {
-                giveStrategyAdvice(); // Consejo normal para la ronda
+                giveStrategyAdvice(); 
             }
         }
 
-
         // --- Event Listeners ---
-        startGameSplashBtn.addEventListener('click', startGameFlow);
-        infoSplashBtn.addEventListener('click', () => showModal(aboutModal));
-        closeAboutModalBtn.addEventListener('click', () => hideModal(aboutModal));
+        if(startGameSplashBtn) startGameSplashBtn.addEventListener('click', startGameFlow);
+        if(infoSplashBtn) infoSplashBtn.addEventListener('click', () => showModal(aboutModal)); 
+        if(closeAboutModalBtn) closeAboutModalBtn.addEventListener('click', () => hideModal(aboutModal));
         
-        resetGameBtn.addEventListener('click', resetGame);
-        dealTurnBtn.addEventListener('click', dealTurn);
-        dealRiverBtn.addEventListener('click', dealRiver);
-        infoBtnGame.addEventListener('click', () => showModal(infoModal));
-        closeInfoModalBtn.addEventListener('click', () => hideModal(infoModal));
-        messageOkBtn.addEventListener('click', () => hideModal(messageModal));
+        if(resetGameBtn) resetGameBtn.addEventListener('click', resetGame);
+        if(dealTurnBtn) dealTurnBtn.addEventListener('click', dealTurn);
+        if(dealRiverBtn) dealRiverBtn.addEventListener('click', dealRiver);
+        if(infoBtnGame) infoBtnGame.addEventListener('click', () => showModal(infoModal)); 
+        if(closeInfoModalBtn) closeInfoModalBtn.addEventListener('click', () => hideModal(infoModal));
+        if(messageOkBtn) messageOkBtn.addEventListener('click', () => hideModal(messageModal));
 
-        saveSetupBtn.addEventListener('click', () => {
+        if(saveSetupBtn) saveSetupBtn.addEventListener('click', () => {
             const playersVal = parseInt(numPlayersInput.value);
             const turnVal = parseInt(playerTurnInput.value);
-            if (isNaN(playersVal) || playersVal < 2 || playersVal > 9) { showMessage('Error', 'Jugadores debe ser entre 2 y 9.'); return; }
-            if (isNaN(turnVal) || turnVal < 1 || turnVal > playersVal) { showMessage('Error', `Tu turno debe ser entre 1 y ${playersVal}.`); return; }
+            if (isNaN(playersVal) || playersVal < 2 || playersVal > 9) { showMessage('Error', 'Jugadores debe ser entre 2 y 9.', true); return; }
+            if (isNaN(turnVal) || turnVal < 1 || turnVal > playersVal) { showMessage('Error', `Tu turno debe ser entre 1 y ${playersVal}.`, true); return; }
             numPlayers = playersVal;
             playerTurnIndex = turnVal - 1;
             hideModal(setupModal);
-            showMessage('Configuración Guardada', `Jugadores: ${numPlayers}, Tu turno: ${turnVal}. Selecciona las 3 cartas del Flop.`);
+            if(strategyAdvice) strategyAdvice.textContent = `Configuración: ${numPlayers} jugadores, tu turno ${turnVal}. Selecciona 3 cartas para el Flop.`;
             currentRound = 'pre-flop'; 
             showSelectCommunityCardsModal(3); 
             updateControlButtons();
-            giveStrategyAdvice();
         });
 
-        confirmHoleCardsBtn.addEventListener('click', () => {
+        if(confirmHoleCardsBtn) confirmHoleCardsBtn.addEventListener('click', () => {
             if (tempSelectedHoleCards.length === 2) {
                 playerHand = [...tempSelectedHoleCards];
                 removeCardsFromDeck(playerHand);
                 renderPlayerHand();
-                cardsDisplay.classList.add('hidden-collapsed'); 
+                if(cardsDisplay) cardsDisplay.classList.add('hidden-collapsed'); 
                 hideModal(selectHoleCardsModal);
                 isPlayerTurnToAct = true;
-                // strategyAdvice.textContent = 'Cartas seleccionadas. ¡Tu turno de apostar!';
                 giveStrategyAdvice();
                 updateControlButtons();
-            } else { showMessage('Error', 'Selecciona exactamente 2 cartas.'); }
+            } else { showMessage('Error', 'Selecciona exactamente 2 cartas.', true); }
         });
 
-        confirmCommunityCardsBtn.addEventListener('click', () => {
+        if(confirmCommunityCardsBtn) confirmCommunityCardsBtn.addEventListener('click', () => {
             if (tempSelectedCommunityCards.length === cardsToSelectForCommunity) {
                 communityCards.push(...tempSelectedCommunityCards);
                 removeCardsFromDeck(tempSelectedCommunityCards);
-                if (!cardsDisplay.classList.contains('hidden-collapsed')) { 
+                if (cardsDisplay && !cardsDisplay.classList.contains('hidden-collapsed')) { 
                     renderDeck(cardsDisplay, deck, false);
                 }
                 renderCommunityCards();
@@ -1177,22 +1217,18 @@
 
                 if (currentRound === 'pre-flop') { 
                     currentRound = 'flop';
-                    // strategyAdvice.textContent = 'Flop en mesa. Selecciona tus 2 cartas.';
-                    showMessage('Flop Seleccionado', 'Ahora selecciona tus 2 cartas iniciales.');
+                    if(strategyAdvice) strategyAdvice.textContent = 'Flop en mesa. Selecciona tus 2 cartas iniciales.';
                     showSelectHoleCardsModal();
                 } else if (currentRound === 'flop') { 
                     currentRound = 'turn';
                     isPlayerTurnToAct = true;
-                    // strategyAdvice.textContent = 'Turn en mesa. ¡Tu turno de apostar!';
-                    showMessage('Turn Seleccionado', '¡Apostar!');
+                    if(strategyAdvice) strategyAdvice.textContent = 'Turn en mesa. ¡Tu turno de apostar!';
                 } else if (currentRound === 'turn') { 
                     currentRound = 'river';
                     isPlayerTurnToAct = true;
-                    // strategyAdvice.textContent = 'River en mesa. ¡Última ronda de apuestas!';
-                    showMessage('River Seleccionado', '¡Últimas apuestas!');
+                    if(strategyAdvice) strategyAdvice.textContent = 'River en mesa. ¡Última ronda de apuestas!';
                 }
                 
-                // Si es el River y ya no es turno del jugador (porque no hay apuestas simuladas después de la selección)
                 if (currentRound === 'river' && communityCards.length === 5 && playerHand.length === 2 && !isPlayerTurnToAct) {
                      const bestHandDetails = evaluateBestHand(playerHand, communityCards);
                      giveStrategyAdvice(bestHandDetails.name);
@@ -1201,18 +1237,18 @@
                 }
                 updateControlButtons();
 
-            } else { showMessage('Error', `Selecciona ${cardsToSelectForCommunity} cartas.`); }
+            } else { showMessage('Error', `Selecciona ${cardsToSelectForCommunity} cartas.`, true); }
         });
 
-        foldBtn.addEventListener('click', () => { 
+        if(foldBtn) foldBtn.addEventListener('click', () => { 
             showMessage('Acción', 'Te has retirado (Fold).'); 
             finalizeRoundActions();
         });
-        callBtn.addEventListener('click', () => { 
+        if(callBtn) callBtn.addEventListener('click', () => { 
             showMessage('Acción', 'Has igualado (Call).'); 
             finalizeRoundActions();
         });
-        raiseBtn.addEventListener('click', () => { 
+        if(raiseBtn) raiseBtn.addEventListener('click', () => { 
             showMessage('Acción', 'Has subido (Raise).'); 
             finalizeRoundActions();
         });
@@ -1249,7 +1285,7 @@
             matrixInterval = setInterval(() => drawSpecificMatrix(matrixCanvas, ctx, splashDrops), 33);
         }
 
-        function stopSplashMatrixAnimation() { clearInterval(matrixInterval); }
+        function stopSplashMatrixAnimation() {if (matrixInterval) clearInterval(matrixInterval); }
 
         function startLoadingMatrixAnimation() {
             if (!loadingMatrixCanvas) return;
@@ -1259,7 +1295,7 @@
             loadingMatrixInterval = setInterval(() => drawSpecificMatrix(loadingMatrixCanvas, loadingCtx, loadingDrops), 33);
         }
 
-        function stopLoadingMatrixAnimation() { clearInterval(loadingMatrixInterval); }
+        function stopLoadingMatrixAnimation() { if (loadingMatrixInterval) clearInterval(loadingMatrixInterval); }
 
         window.addEventListener('resize', () => {
             if (splashScreen && !splashScreen.classList.contains('hidden')) startSplashMatrixAnimation();
